@@ -1,0 +1,68 @@
+# Secrets
+.env
+.env.local
+.env.*.local
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Logs
+*.log
+
+# Local agent settings (per-machine, no commitear)
+.claude/settings.local.json
+
+# Veredicto de una corrida — es del orquestador, no del repo.
+#
+# `/spec-new` lo escribe en la raíz al terminar; quien lo lanzó lo lee y
+# lo borra. Es estado transitorio de UNA corrida y caduca en cuanto
+# termina, así que commitearlo deja en la rama de la feature algo que ya
+# no es cierto.
+#
+# Estaba sólo protegido por el `os.remove()` de quien lo lanza. Se midió
+# el 2026-09-10: cerrando el lazo a mano, el archivo quedó como `??` en
+# `git status` y el siguiente `git add -A` se lo llevaba. La protección
+# tiene que vivir en el repo, no en el script que a veces no llega.
+result.json
+
+# Transcripts / capturas de conversación (locales, no commitear)
+# IMPORTANTE: pueden contener secretos pegados durante la sesión
+# (tokens, JWT, .env). NUNCA commitear.
+# Patrón Claude Code: YYYY-MM-DD-HHMMSS-<slug>.txt
+[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9]*.txt
+*-command-message*.txt
+*-caveatcaveat-*.txt
+# Exports de sesión de otros agentes (OpenCode `session-<id>.md`, Codex, etc.)
+session-*.md
+*.session.md
+.opencode/sessions/
+.codex/sessions/

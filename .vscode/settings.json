@@ -1,0 +1,14 @@
+{
+  // AI-DLC — el contrato de agente de este repo es AGENTS.md, en la raiz.
+  //
+  // VS Code solo lo adjunta al chat si este setting esta en true, y su
+  // valor por defecto vive en el PERFIL DE USUARIO, no en el repo: un
+  // clone en una maquina nueva opera sin el contrato y sin ningun error
+  // visible. El chat responde igual de fluido; simplemente no es el
+  // Service Agent. Por eso el setting viaja aqui, con el repo.
+  //
+  // Ojo: aplica al "Local agent harness" — es decir, al MODO AGENTE.
+  // En modo Ask no se adjunta ni con esto en true. Ver AGENTS.md
+  // seccion *Slash commands disponibles*.
+  "chat.useAgentsMdFile": true
+}

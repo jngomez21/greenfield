@@ -1,0 +1,1 @@
+../../.agents/commands/contract-new.md

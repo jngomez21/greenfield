@@ -1,0 +1,215 @@
+# repo-config.yaml — greenfield
+#
+# Configuración operacional del repo. **Fuente de verdad** para tipo
+# de repo, tracker de work items, ambientes desplegables y flujo de
+# promoción. Referenciado por AGENTS.md, los slash commands de
+# .claude/commands/ y los skills.
+#
+# Reemplaza el antiguo `branch-flow.md` (que sólo cubría ramas).
+# Ver §6 *Configuración del repo* de la metodología AI-DLC.
+
+# ─── Tipo de repo ────────────────────────────────────────────────────
+# service        : servicio backend desplegable a infra (default SYC)
+# library        : paquete npm/pip/maven (sin "ambientes"; prerelease/release)
+# frontend-app   : app web/SPA con previews por PR
+# infra          : terraform / helm / pulumi (sandbox + prod típicamente)
+# custom         : declarar environments y deploy_trigger manualmente
+repo_type: service
+
+# ─── Trackers de work items (v0.17 multi-tracker) ────────────────────
+# trackers: lista de uno o más trackers, cada uno con `role`.
+#
+# Roles:
+#   owner       : UN solo. Gobierna commits (AB#<id>), lifecycle.
+#   stakeholder : N. Trazabilidad cross-team (read-only). Equipo cliente
+#                 o receiving team cuyos work items se citan pero no se
+#                 modifican.
+#   qa          : opcional. Tracker separado para test plans / defectos.
+#
+# Tipos:
+#   azure-devops : [R*.*] AB#<id> (default SYC)
+#   github-issues, jira, linear, custom
+#
+# creation_mode (per-tracker, sólo aplica a `role: owner`):
+#   discover-first : default brownfield. El agente consulta primero,
+#                    refleja lo existente. NO crea paralelos.
+#   assisted       : default greenfield. Propone, emite comandos `az`.
+#   auto           : crea via MCP con confirmación.
+#   manual         : el dev maneja work items, agente sólo cita.
+#
+# work_item_mapping (per-tracker, opcional):
+#   default: initiative_to=Epic, feature_to=Feature, task_to=User Story
+#   override para equipos que no usan Features.
+#
+# Si el repo NO tiene tracker: dejar `trackers: []` o eliminar el bloque.
+trackers: []
+
+# Ejemplo 1 — repo simple, un solo equipo (descomentar y configurar):
+# trackers:
+#   - name: dev-team
+#     type: azure-devops
+#     role: owner
+#     org: syc
+#     project: <project-name>
+#     default_area_path: <area\\path>
+#     creation_mode: discover-first    # discover-first | assisted | auto | manual
+
+# Ejemplo 2 — cross-team (equipo X desarrolla para equipo Y):
+# trackers:
+#   - name: dev-team
+#     type: azure-devops
+#     role: owner
+#     org: syc
+#     project: Edesk
+#     default_area_path: Edesk\\Web
+#     creation_mode: discover-first
+#   - name: receiving-team
+#     type: azure-devops
+#     role: stakeholder
+#     org: syc
+#     project: Estampillas
+#     default_area_path: Estampillas\\NeoEstampillas
+
+# Ejemplo 3 — equipo que no usa Features, trabaja con User Stories:
+# trackers:
+#   - name: dev-team
+#     type: azure-devops
+#     role: owner
+#     org: syc
+#     project: <project-name>
+#     creation_mode: discover-first
+#     work_item_mapping:
+#       initiative_to: Epic
+#       feature_to: User Story         # ← override default
+#       task_to: Task
+
+# Atajo legacy (backwards-compat, sin role multi-tracker):
+#   tracker: azure-devops
+#   tracker_config: { org: syc, project: ..., default_area_path: ... }
+# El parser lo expande a trackers[] con role: owner.
+
+# ─── Ambientes y flujo de promoción ──────────────────────────────────
+# Default `repo_type: service`: pruebas → qa → main (3 ambientes).
+# Para `library` típico: sólo pruebas (prerelease) → main (release).
+# Para `infra` típico: sandbox → prod.
+# Los `name` aquí se usan en `partial-deploy-<env>` y `deployed:<env>`.
+environments:
+  - name: pruebas
+    branch: pruebas
+    deploy_trigger: auto-on-merge      # auto-on-merge | manual | scheduled | publish-prerelease | publish-release
+    gate: "Tests unit + integration + e2e verdes + 1+ reviewer del equipo"
+  - name: qa
+    branch: qa
+    deploy_trigger: auto-on-merge
+    gate: "Tests verdes + state ≥ partial-deploy-pruebas + QA sign-off"
+  - name: main
+    branch: main
+    deploy_trigger: manual             # requiere botón en pipeline / merge dirigido
+    gate: "State feature-complete + rollout-plan.md + Ops sign-off"
+
+promotion_path: [pruebas, qa, main]
+
+# ─── Disciplinas y contratos (opcional, v0.27) ───────────────────────
+# Declara qué disciplinas NO-ingeniería participan en este repo y qué
+# tipo de contrato posee cada una (§9 y §12 del methodology).
+#
+# Si este bloque NO existe, ninguna disciplina externa participa: a tus
+# features no se les exige ningún artefacto nuevo, ningún ítem de
+# checklist ni ningún firmante adicional (§17 *métrica de control*).
+# Un repo sin UI no debe declarar nada aquí.
+#
+# Precisión: el instalador copia igual las plantillas y los comandos de
+# contrato al repo — el payload no se condiciona por capacidad, igual
+# que ya ocurría con los `/ado-*` en repos sin tracker. Lo que no
+# aparece es trabajo exigido: sin este bloque, nada de eso se activa ni
+# se menciona en el flujo de una spec.
+#
+# `design_service` (abajo) se mantiene como ALIAS compatible de
+# `disciplines.design`. No se deprecia.
+#
+# enforcement (§7): consejo | garantia | bloqueo
+#   consejo  : el agente anota el riesgo, el humano decide
+#   garantia : checklist / hook local, se puede saltar con --no-verify
+#   bloqueo  : CI o gate humano, no se salta
+#
+# disciplines:
+#   design:
+#     contract_types: [design]        # DS-* fundamentos · DC-* componente · DF-* flujo
+#     enforcement: garantia
+#     owner: "@<persona-de-diseno>"
+#
+#     # tooling: OPCIONAL y de forma libre. Ningún gate, comando ni
+#     # regla de spec-lint puede leer este bloque (§12). Es documentación
+#     # de dónde vive el insumo, no una dependencia.
+#     # tooling:
+#     #   source: figma | penpot | sketch | xd | ninguna | <lo que sea>
+#     #   url: <opcional>
+#     #   generator: figma-make | v0 | lovable | ninguno
+#     #   generation_guide: .ai-dlc/design/Guidelines.md   # sólo si hay generator
+#
+#   legal:
+#     contract_types: [policy]        # POL-*
+#     enforcement: consejo
+#     owner: "@<persona-de-juridica>"
+
+# Registro de tipos de contrato. Corporativo por default; un repo puede
+# apuntar a otro path o mantener el suyo. Si el archivo no existe, sólo
+# aplican los tipos técnicos (api, event) que la metodología ya define.
+# contract_types_registry: .org/contract-types.yaml
+
+# ─── Paralelismo entre disciplinas (opcional, v0.27) ─────────────────
+# Cuántos slices por delante trabaja la disciplina productora respecto
+# de la consumidora (§12). Es una declaración de EQUIPO, no una regla
+# de la metodología: nada la valida ni la exige.
+# parallelism:
+#   lead_slices: 1
+
+# ─── Servicio de diseño (opcional, alias legacy) ─────────────────────
+# Equivalente a `disciplines.design`. Se mantiene por compatibilidad
+# con repos adoptados antes de v0.27.
+# design_service:
+#   figma_team_url: https://www.figma.com/files/team/...
+
+# ─── Runtime / target de deploy (opcional) ──────────────────────────
+# openshift      : default SYC para servicios
+# k8s            : Kubernetes vanilla
+# npm-registry   : para `repo_type: library`
+# static-host    : Vercel / Netlify / S3+CloudFront
+# none           : repo no se despliega (`docs-only`, `catalog-only`)
+runtime:
+  type: TBD                            # sin decidir — ver stack/tech-stack.md § Deploy target
+  # cluster: ocp-eu-west-1
+  # namespace_pattern: "{service}-{env}"
+
+# ─── Política de feature flags (opcional) ────────────────────────────
+# feature_flags:
+#   default_at_merge_to_main: OFF
+#   cleanup_after_days_at_100pct: 90
+
+# ─── Servidores MCP (Model Context Protocol) ────────────────────────
+# Lista declarativa de qué MCPs usa este repo y para qué. La config
+# técnica (command, args, env vars) vive en `.mcp.json` al root del
+# repo (estándar Claude Code; Cursor lee `.cursor/mcp.json`, Codex CLI
+# usa su propia ubicación — ver AGENTS.md § Servidores MCP).
+#
+# Para agregar un MCP nuevo (ej. SonarQube):
+#   1. Agregar entrada aquí (name + purpose + when aplica)
+#   2. Configurar el server en `.mcp.json`
+#   3. Documentar env vars requeridas en `.env.example`
+#   4. (Opcional) Mencionar en AGENTS.md § Servidores MCP qué habilita
+#
+# Catálogo de MCPs comunes en §13 *Extensibilidad de MCPs* del
+# methodology (azure-devops, sonarqube, github, jira, postgres,
+# figma, slack, etc.).
+mcps: []
+# Ejemplos (descomentar y configurar según el repo):
+# mcps:
+#   - name: azure-devops
+#     purpose: "Sync con Azure Boards, PRs y Pipelines"
+#     enabled_when: "tracker: azure-devops"
+#   - name: sonarqube
+#     purpose: "Análisis de calidad de código y vulnerabilidades"
+#     docs: "https://docs.sonarsource.com/sonarqube/latest/"
+#   - name: figma
+#     purpose: "Lectura de diseños desde el servicio de diseño"
+#     enabled_when: "disciplines.design declarado"

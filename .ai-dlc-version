@@ -1,0 +1,351 @@
+methodology_version: "0.170"
+template_version: "v0.172"
+applied_at: 2026-09-24T20:50:09Z
+applied_by: unknown
+mode: greenfield
+installer: ai-dlc-init
+placeholders:
+  SERVICE_NAME: greenfield
+  OWNER_TEAM: TBD
+  LEAD_EMAIL: TBD
+files:
+  .agents/commands/ado-link.md:
+    role: owned
+    sha256_at_install: 44ca1dfdf8e65aee9cd92545792086237f70c1f8d0e5fd4ca39097a3a28e9895
+  .agents/commands/ado-status.md:
+    role: owned
+    sha256_at_install: 20ab17aeffe78a87b7f83d237ae9cb7cb4707d291a4258d145284d62283fbe97
+  .agents/commands/adopt.md:
+    role: owned
+    sha256_at_install: 0063b6339f08735ca4384d07b59e5773296da869db6e2097e2786e9e7f9e6864
+  .agents/commands/bug-triage.md:
+    role: owned
+    sha256_at_install: 34651ce256491803ba26bfd4e81638ae91227e03b62c9b3349ab11eea7e2f617
+  .agents/commands/contract-new.md:
+    role: owned
+    sha256_at_install: c5ba3f486bee2d979a88a6681ce159a29c3f0fd2da68846901167ac12c48671e
+  .agents/commands/contract-verify.md:
+    role: owned
+    sha256_at_install: fac3158c8b3ae39a56d17fa83204d91c4b850962417f121eea9839d5b1430d8d
+  .agents/commands/spec-amend.md:
+    role: owned
+    sha256_at_install: e1767a42ab65a6330559e27d9047ff152bc8f3dc8db9ae4ed6ddf926fdaa8e58
+  .agents/commands/spec-clarify.md:
+    role: owned
+    sha256_at_install: ef71534b978a6bf50d6f51c703ad440bc562279db1eee7cde735e25fdb425868
+  .agents/commands/spec-design.md:
+    role: owned
+    sha256_at_install: 6ba73aa2ec878c0c9bd35d55b4b7ec222214dca46767c039d9decc8e14d1d0c6
+  .agents/commands/spec-handoff.md:
+    role: owned
+    sha256_at_install: 1f63d62f3fd027f8630d77ec87e806fe47187762e7676885da0c5eaf341d7ad5
+  .agents/commands/spec-implement.md:
+    role: owned
+    sha256_at_install: 83d25331144c0b4b6878434ec5c2821ab20eb0d86b8661e965c05879b8cb67bd
+  .agents/commands/spec-new.md:
+    role: owned
+    sha256_at_install: 19068b0b152bb5e0a7c1558d81f3ba88f71e1ef27ad6e3d13bcd588ef13b09ab
+  .agents/commands/spec-promote.md:
+    role: owned
+    sha256_at_install: cdeeb18f29fdd3aa2d0debbabaec826ba49d95a144c02c12dc9e18c0d00e26f7
+  .agents/commands/spec-status.md:
+    role: owned
+    sha256_at_install: 8b607039621b3c95234f19ec781f68ad53bb78c82aa7ad78136e7047c5866d35
+  .agents/commands/spec-verify.md:
+    role: owned
+    sha256_at_install: e9b189f49c103aa69e6498021315dc0c7c905d1ce20deab92a9dd84b8badb480
+  .agents/skills/README.md:
+    role: owned
+    sha256_at_install: 9578d8c5cd9579416dbeef653ef1f33c07480fb13a55d52f6cbdbc0c1213c1a9
+  .agents/templates/README.md:
+    role: owned
+    sha256_at_install: 94ddf02fe796f3af24b0f2c1ecccbcf4e495b388a670656c98daac2c36939640
+  .agents/templates/contract/CONTRACT-000.md:
+    role: owned
+    sha256_at_install: 2232c76f6df21ef65e1a7c4db08abd835ffaf7c040c2e959499024673cdbd104
+  .agents/templates/contract/DC-000.md:
+    role: owned
+    sha256_at_install: edf9f41ef510c4dda10dace0636d6ecd4c252cd029345f592b825019efc1a162
+  .agents/templates/contract/DF-000.md:
+    role: owned
+    sha256_at_install: c11655e22ee787fa40863defda3ad22782bca61d679e395b5308f6eb276b9b00
+  .agents/templates/contract/DS-000.md:
+    role: owned
+    sha256_at_install: 6d64e0d7c51fbba6351e72ec41a71e5df2ae8512f7f2bd0fa1614fdc237b1ecc
+  .agents/templates/spec/checklist-requirements.md:
+    role: owned
+    sha256_at_install: 5474933af6d3fdfa86396784682b5f42d80c4aa12c22023e9eee9ce20a019f7b
+  .agents/templates/spec/design.md:
+    role: owned
+    sha256_at_install: 49faa69d48742bb62033984129e0c434721952ce669c4ebe86da50f5bc4729e2
+  .agents/templates/spec/requirements.md:
+    role: owned
+    sha256_at_install: 3baa01b34030437b61deb931397e3d8dda02a378c392f54225fa9bf00d72cc52
+  .agents/templates/spec/status.md:
+    role: owned
+    sha256_at_install: 1f19b3aea583517053a277c756c96f2854d2d8fd81c5a142c36aa529d8797479
+  .agents/templates/spec/tasks.md:
+    role: owned
+    sha256_at_install: d6b567a17514593bc7a2c9db77e70f0a5481f42d88c46ab0acbbbb52b887d0f5
+  .gitattributes:
+    role: template
+    sha256_at_install: 6e37096b88af7e515268b84ba072c5388812b20225a73e0400912bc0431d158d
+  .github/copilot-instructions.md:
+    role: owned
+    sha256_at_install: cd4f3f29c67ff59595f01612f5d89f974aee5fd9363a1aafaa0b341401dd262c
+  .gitignore:
+    role: template
+    sha256_at_install: 991e1128b7a42463730be6a1b30d2dab17dcf9c7f06be5d2b4011a481e5e5d3b
+  .mcp.json.example:
+    role: owned
+    sha256_at_install: d438e09e7a46f1e1a9d5c7873131c7872b06636f04c94daa37f802df261cc3d8
+  .org/README.md:
+    role: owned
+    sha256_at_install: a73e44e46442c62b1d3aa2e34685245087ee4b8b7010428f5672f4e520953562
+  .org/contract-types.yaml:
+    role: template
+    sha256_at_install: b751214273d990984d63f9eebe1e4adc62e43ee7f3dd26aec5277029ee6489fd
+  .vscode/settings.json:
+    role: template
+    sha256_at_install: 1f1f92a61fbe985038381a45bfee08c3b5bdb8d26d070623681f704ac2f432bf
+  ADOPT.md:
+    role: owned
+    sha256_at_install: cd6e9770c84fa5a4233d41f3b03dd8e664f5dae50db28b8a2b045dc8125bba68
+  AGENTS.md:
+    role: bracketed
+    sentinel_version: "0.170"
+    sha256_at_install: 970100f61ec94516f63fa0d9742bce046e49f84d1b7b9358495bbc997bb8b168
+  BOOTSTRAP.md:
+    role: owned
+    sha256_at_install: 553f6fc4c1636617da0d8e9a8505dff6ddf0a83f91d04888ebace167918648f5
+  BROWNFIELD-CHECKLIST.md:
+    role: owned
+    sha256_at_install: b353938da0fd5eabf1fcedda3cb4070a2814883fc2dd47b9902dbd9ffd8a0fd5
+  CLAUDE.md:
+    role: owned
+    sha256_at_install: 52eb2414d12b88e1310147faa6b1496225bfad88d2a189fd5a4f3878a835561b
+  repo-config.yaml:
+    role: template
+    sha256_at_install: b5d23b28700014834717abaad43e94f8b3d7a35f7f715bbb8d5444c4b207ba22
+  scripts/restore-symlinks.ps1:
+    role: owned
+    sha256_at_install: 09d5bb5415588f0086890d0875f9d16f9dde1521d0f45c3f01a5d2867fa86b93
+  scripts/restore-symlinks.sh:
+    role: owned
+    sha256_at_install: 4841adfe508eaa339d6262c409afdb3f7fbe7134107b6d8b2ac35c92fa09b305
+  scripts/spec-lint.ps1:
+    role: owned
+    sha256_at_install: 62dd6a94e42e7210633233e68d1fb5fa72d4bd6d5dbf50aa6cc3e226c6f7f825
+  scripts/spec-lint.sh:
+    role: owned
+    sha256_at_install: 179058400326b10262826583dddfc24379bab41a70d1e85ec648f12243e45844
+  scripts/sync-cursor-commands.ps1:
+    role: owned
+    sha256_at_install: 1ccf56f367035188e3d6f1f764923446e8191f72138acca6980a1ce2a7c0881e
+  scripts/sync-tooling.ps1:
+    role: owned
+    sha256_at_install: 51a3280f9efb06317bbf1f794e02d2bde431db7bd80c18f388497999b570c312
+  specs/README.md:
+    role: owned
+    sha256_at_install: 3ca43e33318d950f666ef6fd25068b71468a95a773a05268803f875060a8b806
+  stack/README.md:
+    role: template
+    sha256_at_install: 2b7f1a3d1dfb39295481b5a689fa0aa95862eb50e3d8cdf19f0660efe4ab84de
+  stack/architecture.md:
+    role: template
+    sha256_at_install: 15f9a5d65b8c21244491dfad875444e824b485a55ce94b703f7c33badf25aa49
+  stack/constraints.md:
+    role: template
+    sha256_at_install: e968b7c410526792d9ebfad87da13951f4894b4a6b83c09c502794dd60455919
+  stack/patterns.md:
+    role: template
+    sha256_at_install: 3c1e4bfec9021d1c50deab85138aa3b211f0184d5e4e845eeb15405bea8501c1
+  stack/security.md:
+    role: template
+    sha256_at_install: b1d0d31de28a7e90305231a57b8e7b56cf3e5b616c1da3f54fc14a0800169b26
+  stack/tech-stack.md:
+    role: template
+    sha256_at_install: 8d307615883f68e164c5fb6e4acbd49b03deaa0a9e40a04514b52e37bf41d2d3
+  stack/testing.md:
+    role: template
+    sha256_at_install: 5864a49318fdea0ca2fe4036ceb155afc3a8205cc789a29e251c672c366458bc
+  .claude/commands/ado-link.md:
+    role: owned
+    sha256_at_install: 7f8978824a6be52d2879f1820f986c8cf11ecb82b5585dfd9e69d7c0094b9971
+  .claude/commands/ado-status.md:
+    role: owned
+    sha256_at_install: 85859914c7778293924ba8f55c231c2d230842645a5888baa25bb917bf6735d8
+  .claude/commands/adopt.md:
+    role: owned
+    sha256_at_install: 30c1cb085a89146f50be50658d979f616b0da9e4598994671cc0fca9e61e46b3
+  .claude/commands/bug-triage.md:
+    role: owned
+    sha256_at_install: 37a1192988636a8e5820d9c15ee7ae75fdcab3817fa6bf25f0a768816fa189b6
+  .claude/commands/contract-new.md:
+    role: owned
+    sha256_at_install: f940d107dc1bb2a1d93ab13bb624c6857949cdfa34238510803896b98816f874
+  .claude/commands/contract-verify.md:
+    role: owned
+    sha256_at_install: fee27fe1a5bde8e7f8819ecd2db7b63a49172ca82de7e4e3020fbc28a9b4a7c8
+  .claude/commands/spec-amend.md:
+    role: owned
+    sha256_at_install: 98701c48202e7d5811361a0bb1b2d2c6dedbcf9d8b9a4aa67824028c7cbd96b7
+  .claude/commands/spec-clarify.md:
+    role: owned
+    sha256_at_install: 116b3caea82cf62154b43ef523641914cd62677bfd408e53cdacee544346aff8
+  .claude/commands/spec-design.md:
+    role: owned
+    sha256_at_install: 23149036f9842389363beb865b89c2922e7fb3e8f8144dcc7074e41abaa54635
+  .claude/commands/spec-handoff.md:
+    role: owned
+    sha256_at_install: 4254f944c284b4e94604cf9b57d7e1ff1b58645b90089a6fb99990341523810f
+  .claude/commands/spec-implement.md:
+    role: owned
+    sha256_at_install: bd78f6a0a5e806439b4847437a8f309ad5b75fd8df288310e564f95249edb5a0
+  .claude/commands/spec-new.md:
+    role: owned
+    sha256_at_install: 349b79425ffa51890d0269b64e0b670340b1f48f2a928c100e9df9a4870ae733
+  .claude/commands/spec-promote.md:
+    role: owned
+    sha256_at_install: 2536098d062e0e8471dc9bd103ef7d6e5482fa921fe6cdfe9bbd28c6e7268e88
+  .claude/commands/spec-status.md:
+    role: owned
+    sha256_at_install: 38254cc723e583ccbb2b8abfe7f0d20e472bedc5b10adf72cd98a15fc4bbb1ba
+  .claude/commands/spec-verify.md:
+    role: owned
+    sha256_at_install: 69348fab000242dc316aab0b94d20ebe6a39868b5155fd69c2d6ce4b43f97898
+  .cursor/commands/ado-link.md:
+    role: owned
+    sha256_at_install: 44ca1dfdf8e65aee9cd92545792086237f70c1f8d0e5fd4ca39097a3a28e9895
+  .cursor/commands/ado-status.md:
+    role: owned
+    sha256_at_install: 20ab17aeffe78a87b7f83d237ae9cb7cb4707d291a4258d145284d62283fbe97
+  .cursor/commands/adopt.md:
+    role: owned
+    sha256_at_install: 0063b6339f08735ca4384d07b59e5773296da869db6e2097e2786e9e7f9e6864
+  .cursor/commands/bug-triage.md:
+    role: owned
+    sha256_at_install: 34651ce256491803ba26bfd4e81638ae91227e03b62c9b3349ab11eea7e2f617
+  .cursor/commands/contract-new.md:
+    role: owned
+    sha256_at_install: c5ba3f486bee2d979a88a6681ce159a29c3f0fd2da68846901167ac12c48671e
+  .cursor/commands/contract-verify.md:
+    role: owned
+    sha256_at_install: fac3158c8b3ae39a56d17fa83204d91c4b850962417f121eea9839d5b1430d8d
+  .cursor/commands/spec-amend.md:
+    role: owned
+    sha256_at_install: e1767a42ab65a6330559e27d9047ff152bc8f3dc8db9ae4ed6ddf926fdaa8e58
+  .cursor/commands/spec-clarify.md:
+    role: owned
+    sha256_at_install: ef71534b978a6bf50d6f51c703ad440bc562279db1eee7cde735e25fdb425868
+  .cursor/commands/spec-design.md:
+    role: owned
+    sha256_at_install: 6ba73aa2ec878c0c9bd35d55b4b7ec222214dca46767c039d9decc8e14d1d0c6
+  .cursor/commands/spec-handoff.md:
+    role: owned
+    sha256_at_install: 1f63d62f3fd027f8630d77ec87e806fe47187762e7676885da0c5eaf341d7ad5
+  .cursor/commands/spec-implement.md:
+    role: owned
+    sha256_at_install: 83d25331144c0b4b6878434ec5c2821ab20eb0d86b8661e965c05879b8cb67bd
+  .cursor/commands/spec-new.md:
+    role: owned
+    sha256_at_install: 19068b0b152bb5e0a7c1558d81f3ba88f71e1ef27ad6e3d13bcd588ef13b09ab
+  .cursor/commands/spec-promote.md:
+    role: owned
+    sha256_at_install: cdeeb18f29fdd3aa2d0debbabaec826ba49d95a144c02c12dc9e18c0d00e26f7
+  .cursor/commands/spec-status.md:
+    role: owned
+    sha256_at_install: 8b607039621b3c95234f19ec781f68ad53bb78c82aa7ad78136e7047c5866d35
+  .cursor/commands/spec-verify.md:
+    role: owned
+    sha256_at_install: e9b189f49c103aa69e6498021315dc0c7c905d1ce20deab92a9dd84b8badb480
+  .opencode/commands/ado-link.md:
+    role: owned
+    sha256_at_install: 44ca1dfdf8e65aee9cd92545792086237f70c1f8d0e5fd4ca39097a3a28e9895
+  .opencode/commands/ado-status.md:
+    role: owned
+    sha256_at_install: 20ab17aeffe78a87b7f83d237ae9cb7cb4707d291a4258d145284d62283fbe97
+  .opencode/commands/adopt.md:
+    role: owned
+    sha256_at_install: 0063b6339f08735ca4384d07b59e5773296da869db6e2097e2786e9e7f9e6864
+  .opencode/commands/bug-triage.md:
+    role: owned
+    sha256_at_install: 34651ce256491803ba26bfd4e81638ae91227e03b62c9b3349ab11eea7e2f617
+  .opencode/commands/contract-new.md:
+    role: owned
+    sha256_at_install: c5ba3f486bee2d979a88a6681ce159a29c3f0fd2da68846901167ac12c48671e
+  .opencode/commands/contract-verify.md:
+    role: owned
+    sha256_at_install: fac3158c8b3ae39a56d17fa83204d91c4b850962417f121eea9839d5b1430d8d
+  .opencode/commands/spec-amend.md:
+    role: owned
+    sha256_at_install: e1767a42ab65a6330559e27d9047ff152bc8f3dc8db9ae4ed6ddf926fdaa8e58
+  .opencode/commands/spec-clarify.md:
+    role: owned
+    sha256_at_install: ef71534b978a6bf50d6f51c703ad440bc562279db1eee7cde735e25fdb425868
+  .opencode/commands/spec-design.md:
+    role: owned
+    sha256_at_install: 6ba73aa2ec878c0c9bd35d55b4b7ec222214dca46767c039d9decc8e14d1d0c6
+  .opencode/commands/spec-handoff.md:
+    role: owned
+    sha256_at_install: 1f63d62f3fd027f8630d77ec87e806fe47187762e7676885da0c5eaf341d7ad5
+  .opencode/commands/spec-implement.md:
+    role: owned
+    sha256_at_install: 83d25331144c0b4b6878434ec5c2821ab20eb0d86b8661e965c05879b8cb67bd
+  .opencode/commands/spec-new.md:
+    role: owned
+    sha256_at_install: 19068b0b152bb5e0a7c1558d81f3ba88f71e1ef27ad6e3d13bcd588ef13b09ab
+  .opencode/commands/spec-promote.md:
+    role: owned
+    sha256_at_install: cdeeb18f29fdd3aa2d0debbabaec826ba49d95a144c02c12dc9e18c0d00e26f7
+  .opencode/commands/spec-status.md:
+    role: owned
+    sha256_at_install: 8b607039621b3c95234f19ec781f68ad53bb78c82aa7ad78136e7047c5866d35
+  .opencode/commands/spec-verify.md:
+    role: owned
+    sha256_at_install: e9b189f49c103aa69e6498021315dc0c7c905d1ce20deab92a9dd84b8badb480
+  .github/prompts/ado-link.prompt.md:
+    role: owned
+    sha256_at_install: 44ca1dfdf8e65aee9cd92545792086237f70c1f8d0e5fd4ca39097a3a28e9895
+  .github/prompts/ado-status.prompt.md:
+    role: owned
+    sha256_at_install: 20ab17aeffe78a87b7f83d237ae9cb7cb4707d291a4258d145284d62283fbe97
+  .github/prompts/adopt.prompt.md:
+    role: owned
+    sha256_at_install: 0063b6339f08735ca4384d07b59e5773296da869db6e2097e2786e9e7f9e6864
+  .github/prompts/bug-triage.prompt.md:
+    role: owned
+    sha256_at_install: 34651ce256491803ba26bfd4e81638ae91227e03b62c9b3349ab11eea7e2f617
+  .github/prompts/contract-new.prompt.md:
+    role: owned
+    sha256_at_install: c5ba3f486bee2d979a88a6681ce159a29c3f0fd2da68846901167ac12c48671e
+  .github/prompts/contract-verify.prompt.md:
+    role: owned
+    sha256_at_install: fac3158c8b3ae39a56d17fa83204d91c4b850962417f121eea9839d5b1430d8d
+  .github/prompts/spec-amend.prompt.md:
+    role: owned
+    sha256_at_install: e1767a42ab65a6330559e27d9047ff152bc8f3dc8db9ae4ed6ddf926fdaa8e58
+  .github/prompts/spec-clarify.prompt.md:
+    role: owned
+    sha256_at_install: ef71534b978a6bf50d6f51c703ad440bc562279db1eee7cde735e25fdb425868
+  .github/prompts/spec-design.prompt.md:
+    role: owned
+    sha256_at_install: 6ba73aa2ec878c0c9bd35d55b4b7ec222214dca46767c039d9decc8e14d1d0c6
+  .github/prompts/spec-handoff.prompt.md:
+    role: owned
+    sha256_at_install: 1f63d62f3fd027f8630d77ec87e806fe47187762e7676885da0c5eaf341d7ad5
+  .github/prompts/spec-implement.prompt.md:
+    role: owned
+    sha256_at_install: 83d25331144c0b4b6878434ec5c2821ab20eb0d86b8661e965c05879b8cb67bd
+  .github/prompts/spec-new.prompt.md:
+    role: owned
+    sha256_at_install: 19068b0b152bb5e0a7c1558d81f3ba88f71e1ef27ad6e3d13bcd588ef13b09ab
+  .github/prompts/spec-promote.prompt.md:
+    role: owned
+    sha256_at_install: cdeeb18f29fdd3aa2d0debbabaec826ba49d95a144c02c12dc9e18c0d00e26f7
+  .github/prompts/spec-status.prompt.md:
+    role: owned
+    sha256_at_install: 8b607039621b3c95234f19ec781f68ad53bb78c82aa7ad78136e7047c5866d35
+  .github/prompts/spec-verify.prompt.md:
+    role: owned
+    sha256_at_install: e9b189f49c103aa69e6498021315dc0c7c905d1ce20deab92a9dd84b8badb480

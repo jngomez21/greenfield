@@ -1,0 +1,1 @@
+../../.agents/commands/spec-amend.md

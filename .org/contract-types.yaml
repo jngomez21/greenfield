@@ -1,0 +1,139 @@
+# contract-types.yaml — registro de tipos de contrato de disciplina
+#
+# Ver §9 *Tipos de contrato: cómo entra una disciplina* del methodology.
+#
+# QUÉ ES: la lista de qué tipos de contrato existen en esta organización
+# (o en este repo), quién es dueño de cada uno, cómo se verifica y en
+# qué capa de enforcement vive.
+#
+# POR QUÉ IMPORTA: agregar una disciplina a AI-DLC = agregar una entrada
+# a este archivo. Ningún otro artefacto de la metodología cambia.
+#
+# ─────────────────────────────────────────────────────────────────────
+# REGLA DE ORO: un tipo entra aquí cuando existe un CASO REAL que lo
+# ejerce. Declarar tipos "para después" es el catálogo aspiracional que
+# §9 prohíbe — se llena de entradas vacías y deja de consultarse.
+# ─────────────────────────────────────────────────────────────────────
+#
+# Este archivo es OPCIONAL. Si no existe, sólo aplican los tipos
+# técnicos (`api`, `event`) que la metodología ya define de base y el
+# repo opera exactamente como antes de v0.27.
+
+version: 1
+owner: plataforma
+
+# ─────────────────────────────────────────────────────────────────────
+# Campos de cada tipo
+# ─────────────────────────────────────────────────────────────────────
+#   id                    identificador del tipo (kebab-case)
+#   id_prefix             prefijo de los contratos de este tipo (DC-, POL-…)
+#   owner_discipline      quién es dueño del CONTENIDO
+#   consumer_disciplines  quiénes lo consumen (a quién se notifica una
+#                         deprecación — sin esto no se puede deprecar)
+#   scopes                niveles de alojamiento permitidos:
+#                         feature | repo | organizacion
+#   human_artifact        formato del artefacto humano (revisión/auditoría)
+#   machine_artifact      formato del artefacto máquina (consumo por agentes)
+#   verification          CÓMO se comprueba el cumplimiento. Si está
+#                         vacío, NO es un contrato: es documentación
+#                         (prueba ácida, §9)
+#   enforcement_default   consejo | garantia | bloqueo  (§7)
+#
+# Ninguna de estas claves puede ser leída por un gate, un slash command
+# o una regla de spec-lint para decidir QUÉ HERRAMIENTA se usa. La
+# herramienta vive en `disciplines.<x>.tooling` de repo-config.yaml y
+# es informativa (§12).
+# ─────────────────────────────────────────────────────────────────────
+
+types:
+
+  # ── Técnicos: existen desde v0.9. Se listan para completar el registro ──
+
+  - id: api
+    id_prefix: "API-"
+    owner_discipline: ingenieria
+    consumer_disciplines: [ingenieria]
+    scopes: [organizacion, repo]
+    human_artifact: markdown
+    machine_artifact: openapi
+    verification: [contract-test, ci-schema-lint]
+    enforcement_default: bloqueo
+
+  - id: event
+    id_prefix: "EVT-"
+    owner_discipline: ingenieria
+    consumer_disciplines: [ingenieria]
+    scopes: [organizacion, repo]
+    human_artifact: markdown
+    machine_artifact: asyncapi
+    verification: [contract-test, ci-schema-lint]
+    enforcement_default: bloqueo
+
+  # ── Diseño: primera disciplina no técnica (v0.27) ──────────────────
+  # Descomentar `disciplines.design` en repo-config.yaml para activarlo.
+
+  - id: design
+    id_prefix: ["DS-", "DC-", "DF-"]     # fundamentos | componente | flujo
+    owner_discipline: diseno
+    consumer_disciplines: [ingenieria, qa]
+    scopes: [feature, repo, organizacion]
+    human_artifact: markdown
+    machine_artifact: json
+    machine_artifact_spec:
+      # DS-* (fundamentos / tokens): formato del W3C Design Tokens
+      # Community Group, NO uno propio. Es lo que evita que el sistema
+      # visual quede atado a la herramienta del momento.
+      # Los tokens semánticos declaran intención, no sólo valor. Los
+      # metadatos van bajo `$extensions`, que es el mecanismo que la
+      # propia especificación define para datos propios — claves de
+      # primer nivel harían el archivo NO válido como W3C, que era el
+      # motivo de elegir el formato. Ver la plantilla DS-000.md:
+      #   { "$value": "...", "$type": "color",
+      #     "$extensions": { "ai-dlc": {
+      #       "intent": "...", "useFor": [], "avoidFor": [] } } }
+      DS: w3c-design-tokens
+      DC: json
+      DF: json
+    verification:
+      - revision-humana        # criterios de aceptación (G2)
+      - a11y-audit             # accesibilidad declarada
+      - component-test         # estados y variantes
+      - visual-regression      # opcional: sólo si el repo lo tiene montado
+    enforcement_default: garantia
+    platform_neutral: true     # la semántica no asume plataforma; los bindings sí
+
+  # ── Tipos NO adoptados todavía ─────────────────────────────────────
+  # Se dejan comentados A PROPÓSITO. Cada uno entra el día que haya un
+  # caso real que lo ejerza — con dueño con nombre y apellido.
+
+  # - id: policy                        # jurídica / cumplimiento / seguridad
+  #   id_prefix: "POL-"
+  #   owner_discipline: juridica
+  #   consumer_disciplines: [ingenieria, producto, datos]
+  #   scopes: [organizacion, repo]
+  #   human_artifact: markdown
+  #   machine_artifact: yaml
+  #   verification: [revision-humana, spec-lint-rule]
+  #   enforcement_default: consejo
+  #   escalates_to_bloqueo_when: "el dato está en la lista crítica de la organización"
+
+  # - id: ops                           # SRE / operaciones
+  #   id_prefix: ["SLO-", "RUN-"]
+  #   owner_discipline: operaciones
+  #   consumer_disciplines: [ingenieria]
+  #   scopes: [repo, organizacion]
+  #   human_artifact: markdown
+  #   machine_artifact: yaml
+  #   verification: [load-test, alerta-produccion, revision-humana]
+  #   enforcement_default: consejo
+  #   # No participa en G2: interviene en G5/G6 (promoción a producción)
+
+  # - id: data                          # gobierno de datos / DBA
+  #   id_prefix: "DAT-"
+  #   owner_discipline: datos
+  #   consumer_disciplines: [ingenieria, juridica]
+  #   scopes: [organizacion, repo]
+  #   human_artifact: markdown
+  #   machine_artifact: json-schema
+  #   verification: [schema-test, revision-dba]
+  #   enforcement_default: garantia

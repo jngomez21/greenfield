@@ -1,0 +1,24 @@
+{
+  "//": "Ejemplo de MCP servers para Claude Code (lo lee desde .mcp.json en la raíz).",
+  "//setup": "Copia este archivo a .mcp.json y sigue guides/MCP-azure-devops-windows.md.",
+  "//secrets": "NO contiene secretos: el PAT va en la env var PERSONAL_ACCESS_TOKEN (setx); el proxy es un hostname interno. .mcp.json es seguro de commitear.",
+  "//por-que-node-y-no-npx": "`npx -y <paquete>` descarga y ejecuta sin preguntar en CADA arranque de sesión, aunque el paquete ya esté instalado. Aquí se apunta al paquete instalado: un proceso, sin red, ruta estable. La sección 1 de la guía lo tiene medido. Si vuelves a poner `npx -y`, C29 del banco lo reporta.",
+  "//instalar": "npm i -g @azure-devops/mcp   — una vez por máquina. `npm root -g` dice la ruta real si no coincide con la de abajo.",
+  "mcpServers": {
+    "azure-devops": {
+      "command": "node",
+      "args": [
+        "${APPDATA}/npm/node_modules/@azure-devops/mcp/dist/index.js",
+        "sycdevops",
+        "-a",
+        "pat"
+      ],
+      "env": {
+        "NODE_USE_ENV_PROXY": "1",
+        "HTTP_PROXY": "http://wsaprd.syc.loc:3128",
+        "HTTPS_PROXY": "http://wsaprd.syc.loc:3128",
+        "NO_PROXY": "*.syc.com.co,*.sycpruebas.com,localhost,127.0.0.1,::1"
+      }
+    }
+  }
+}
