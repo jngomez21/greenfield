@@ -92,7 +92,7 @@
 - **Cubre**: R1.3, R5.1, R5.2
 - **Archivos**: `service.py`, `router.py`, `tests/integration/tasks/test_delete.py`
 - **Acceptance**:
-  - [ ] 204; luego GET/PATCH/DELETE → 404; ID inexistente o inválido → 404
+  - [x] 204; luego GET/PATCH/DELETE → 404; ID inexistente o inválido → 404
 
 ## T9 — Prueba independiente de P1 y NFR2 [S]
 - **Cubre**: R1.1, R1.2, R1.3, R1.4, NFR2

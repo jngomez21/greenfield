@@ -51,6 +51,12 @@ def update(session: Session, owner: str, task_id: uuid.UUID, changes: dict[str, 
     return task
 
 
+def delete(session: Session, owner: str, task_id: uuid.UUID) -> None:
+    """Borrado físico (R5.1)."""
+    session.delete(get(session, owner, task_id))
+    session.flush()
+
+
 def list_tasks(
     session: Session, owner: str, status: TaskStatus | None, limit: int, offset: int
 ) -> tuple[list[Task], int]:

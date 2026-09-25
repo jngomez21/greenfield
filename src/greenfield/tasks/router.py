@@ -65,3 +65,8 @@ def update_task(task_id: str, data: TaskUpdate, sub: CurrentUser, session: DbSes
     if "status" in changes:
         changes["status"] = changes["status"].value
     return TaskRead.model_validate(service.update(session, sub, _parse_id(task_id), changes))
+
+
+@router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_task(task_id: str, sub: CurrentUser, session: DbSession) -> None:
+    service.delete(session, sub, _parse_id(task_id))
