@@ -3,7 +3,7 @@ feature: gestion-tareas
 modality: code                  # code | config-only | data-migration | catalog-only | docs-only | refactor-only (§6)
 initiative: NONE                # opcional — slug/URL sólo si pertenece a una Initiative
 owner: "@jngomez21"
-status: draft                   # draft | in-review | approved | in-implementation | done
+status: approved                # draft | in-review | approved | in-implementation | done
                                 # Quién produce cada transición:
                                 #   draft            /spec-new
                                 #   in-review        el owner, al pedir revisión de la spec

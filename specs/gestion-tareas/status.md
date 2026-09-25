@@ -42,7 +42,7 @@ updated_by: "@jngomez21"
 
 | Gate | Qué firma | Estado |
 |---|---|---|
-| G2 — requirements + design | tech lead | pending |
+| G2 — requirements + design | tech lead | ✅ signed 2026-09-25 by jngomez@syc.com.co (commit d0007d9) |
 | G3 — code review (por PR) | 1+ reviewer | pending |
 | G4 — QA sign-off | QA | pending |
 | G5 — Ops sign-off (pre-prod) | Ops + tech lead | pending |
@@ -58,3 +58,5 @@ D1 (Proveedor de identidad OIDC): NEGOTIATING
 ## Notas
 
 - 2026-09-25: spec creada con /spec-new en `feat/gestion-tareas` (base `pruebas`). Quedan 2 `[NEEDS CLARIFICATION]` (paginación del listado, zona horaria de "hoy") para `/spec-clarify`. `tasks.md` no se crea todavía: vacío dispara `[E10]` en spec-lint v0.170 (contradice a `/spec-new`); lo deriva `/spec-implement` tras G2.
+- 2026-09-25: `/spec-clarify` (UTC, paginación, última escritura gana, supuestos confirmados) y `/spec-design` (API `/v1` en inglés, tabla `tasks`, JWT, k6). `/spec-verify --pre-g2`: 0 CRITICAL, 0 HIGH; V2 y V3 aplicados, V1 (runtime sin decidir) aceptado como bloqueante de `/spec-promote`, no de implementación.
+- 2026-09-25: **G2 firmado** por jngomez@syc.com.co sobre `d0007d9` (self-approval: dev y tech lead son la misma persona). Dependencias nuevas de `design.md` § *Dependencias nuevas* aprobadas **con condición**: `pip-audit` sin vulnerabilidades conocidas. Si aparece alguna, se para y se consulta antes de continuar.
