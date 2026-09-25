@@ -25,7 +25,7 @@ def load_settings() -> Settings:
         auth_issuer=os.environ["AUTH_ISSUER"],
         auth_audience=os.environ["AUTH_AUDIENCE"],
         auth_jwks_url=os.environ["AUTH_JWKS_URL"],
-        log_level=os.environ.get("LOG_LEVEL", "INFO"),
+        log_level=(os.environ.get("LOG_LEVEL") or "INFO").upper(),  # logging exige mayúsculas
     )
 
 

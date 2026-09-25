@@ -4,7 +4,7 @@ import uuid
 from datetime import UTC, date, datetime
 from typing import Any
 
-from sqlalchemy import Select, func, select
+from sqlalchemy import ColumnElement, Select, func, literal_column, select
 from sqlalchemy.orm import Session
 
 from greenfield.errors import NotFoundError
@@ -29,9 +29,16 @@ def create(session: Session, owner: str, data: TaskCreate) -> Task:
     return task
 
 
-def get(session: Session, owner: str, task_id: uuid.UUID) -> Task:
-    """Ajena o inexistente siguen el mismo camino: una sola query con el dueño (DEC-6)."""
-    task = session.scalar(select(Task).where(Task.id == task_id, Task.owner_sub == owner))
+def get(session: Session, owner: str, task_id: uuid.UUID, *, for_update: bool = False) -> Task:
+    """Ajena o inexistente siguen el mismo camino: una sola query con el dueño (DEC-6).
+
+    `for_update` bloquea la fila hasta el commit y la relee de la BD: una escritura
+    concurrente espera a la otra en lugar de pisarla o fallar (R4.6, R4.7, R5.2).
+    """
+    query = select(Task).where(Task.id == task_id, Task.owner_sub == owner)
+    if for_update:
+        query = query.with_for_update().execution_options(populate_existing=True)
+    task = session.scalar(query)
     if task is None:
         raise NotFoundError
     return task
@@ -39,7 +46,7 @@ def get(session: Session, owner: str, task_id: uuid.UUID) -> Task:
 
 def update(session: Session, owner: str, task_id: uuid.UUID, changes: dict[str, Any]) -> Task:
     """Aplica sólo los campos enviados; el UPDATE lleva sólo lo que cambió (R4.1, R4.7)."""
-    task = get(session, owner, task_id)
+    task = get(session, owner, task_id, for_update=True)
     modified = False
     for field, value in changes.items():
         if getattr(task, field) != value:
@@ -53,7 +60,7 @@ def update(session: Session, owner: str, task_id: uuid.UUID, changes: dict[str, 
 
 def delete(session: Session, owner: str, task_id: uuid.UUID) -> None:
     """Borrado físico (R5.1)."""
-    session.delete(get(session, owner, task_id))
+    session.delete(get(session, owner, task_id, for_update=True))
     session.flush()
 
 
@@ -83,8 +90,10 @@ def is_overdue(due_date: date | None, today: date) -> bool:
 def list_pending(
     session: Session, owner: str, today: date, overdue_only: bool, limit: int, offset: int
 ) -> tuple[list[Task], int]:
-    # `<> 'completed'` (no IN pending/in_progress): así usa el índice parcial de pendientes.
-    query = select(Task).where(Task.owner_sub == owner, Task.status != TaskStatus.completed.value)
+    # Literal `<> 'completed'` igual al predicado del índice parcial de pendientes: con un
+    # parámetro bind, el plan genérico de una sentencia preparada no podría usar ese índice.
+    completed: ColumnElement[str] = literal_column(f"'{TaskStatus.completed.value}'")
+    query = select(Task).where(Task.owner_sub == owner, Task.status != completed)
     if overdue_only:
         query = query.where(Task.due_date < today)
     order = (Task.due_date.asc().nulls_last(), Task.created_at.asc(), Task.id.asc())

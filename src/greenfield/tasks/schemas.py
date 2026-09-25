@@ -25,6 +25,13 @@ class TaskStatus(StrEnum):
     completed = "completed"
 
 
+def _no_nul(value: str) -> str:
+    # PostgreSQL no puede guardar U+0000 en texto: sin esto la BD fallaría con un 500.
+    if "\x00" in value:
+        raise ValueError("El texto no puede contener el carácter nulo (U+0000).")
+    return value
+
+
 def _not_blank(value: str) -> str:
     if not value.strip():
         raise ValueError("El título no puede estar vacío ni contener sólo espacios.")
@@ -37,8 +44,10 @@ def _iso_date(value: Any) -> Any:
     return value  # Pydantic valida después que sea una fecha de calendario real
 
 
-Title = Annotated[str, Field(min_length=1, max_length=200), AfterValidator(_not_blank)]
-Description = Annotated[str, Field(max_length=2000)]
+Title = Annotated[
+    str, Field(min_length=1, max_length=200), AfterValidator(_not_blank), AfterValidator(_no_nul)
+]
+Description = Annotated[str, Field(max_length=2000), AfterValidator(_no_nul)]
 DueDate = Annotated[date, BeforeValidator(_iso_date)]
 
 

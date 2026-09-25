@@ -21,7 +21,9 @@ _bearer = HTTPBearer(auto_error=False)
 
 @lru_cache
 def _jwks_client() -> jwt.PyJWKClient:
-    return jwt.PyJWKClient(get_settings().auth_jwks_url)  # cachea las llaves del IdP
+    # Cachea las llaves; un `kid` desconocido refresca como mucho cada 30 s (cooldown de PyJWT).
+    # timeout corto: si el IdP no responde, no retener un hilo del servidor 30 s por request.
+    return jwt.PyJWKClient(get_settings().auth_jwks_url, timeout=5)
 
 
 def get_key_resolver() -> KeyResolver:

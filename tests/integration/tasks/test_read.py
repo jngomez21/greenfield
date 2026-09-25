@@ -113,6 +113,7 @@ def test_paginacion_por_defecto_50_con_total(
         ({"limit": 101}, "limit"),
         ({"offset": -1}, "offset"),
         ({"limit": "abc"}, "limit"),
+        ({"offset": 10**20}, "offset"),  # code review: fuera de bigint daba 500
     ],
 )
 def test_parametros_de_paginacion_invalidos_son_422(

@@ -20,6 +20,12 @@ def test_config_lee_variables_y_log_level_por_defecto(full_env: pytest.MonkeyPat
     assert settings.log_level == "INFO"
 
 
+@pytest.mark.parametrize(("raw", "expected"), [("info", "INFO"), ("", "INFO"), ("Debug", "DEBUG")])
+def test_config_normaliza_log_level(full_env: pytest.MonkeyPatch, raw: str, expected: str) -> None:
+    full_env.setenv("LOG_LEVEL", raw)
+    assert load_settings().log_level == expected
+
+
 def test_config_falla_listando_las_variables_que_faltan(full_env: pytest.MonkeyPatch) -> None:
     full_env.delenv("AUTH_ISSUER")
     full_env.setenv("AUTH_AUDIENCE", "")

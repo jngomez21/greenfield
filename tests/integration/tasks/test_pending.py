@@ -132,6 +132,7 @@ def test_pendientes_paginadas_con_total(
         ({"limit": 101}, "limit"),
         ({"offset": -1}, "offset"),
         ({"overdue": "quizas"}, "overdue"),
+        ({"offset": 10**20}, "offset"),  # code review: fuera de bigint daba 500
     ],
 )
 def test_parametros_invalidos_de_pendientes_son_422(

@@ -95,6 +95,8 @@ def test_nulo_quita_descripcion_y_fecha_limite(
         ({"description": "no debe guardarse", "due_date": "2026-02-30"}, "due_date"),
         ({"description": "x" * 2001}, "description"),
         ({"description": "no debe guardarse", "owner_sub": "user-b"}, "owner_sub"),
+        ({"description": "no debe guardarse", "title": "a\u0000"}, "title"),
+        ({"description": "nulo \u0000 embebido"}, "description"),
     ],
 )
 def test_cambios_invalidos_se_rechazan_sin_modificar_nada(

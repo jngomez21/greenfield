@@ -65,8 +65,8 @@ def test_database_url() -> str:
         pytest.exit(str(exc), returncode=2)
     # La app lee su configuración del entorno: en pruebas apunta a la base *_test.
     os.environ["DATABASE_URL"] = url
-    for key, value in TEST_AUTH_ENV.items():
-        os.environ.setdefault(key, value)
+    # Asignación incondicional: los tokens de prueba se firman con estos iss/aud.
+    os.environ.update(TEST_AUTH_ENV)
     return url
 
 

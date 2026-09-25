@@ -26,7 +26,7 @@ CurrentUser = Annotated[str, Depends(get_current_user)]
 # scope="function": el commit ocurre antes de responder, no después (FastAPI >= 0.121).
 DbSession = Annotated[Session, Depends(get_session, scope="function")]
 Limit = Annotated[int, Query(ge=1, le=100)]
-Offset = Annotated[int, Query(ge=0)]
+Offset = Annotated[int, Query(ge=0, le=2**63 - 1)]  # tope de bigint: más allá, la BD da 500
 StatusFilter = Annotated[TaskStatus | None, Query(alias="status")]
 
 

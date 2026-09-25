@@ -75,6 +75,19 @@ def test_crear_guarda_descripcion_estado_y_fecha_limite(
     assert {k: task[k] for k in body} == body
 
 
+# Derived from R2.4, R2.5 (code review: PostgreSQL no admite U+0000 en texto)
+@pytest.mark.parametrize(
+    ("body", "field"),
+    [({"title": "a\u0000b"}, "title"), ({"title": "x", "description": "d\u0000"}, "description")],
+)
+def test_crear_rechaza_caracter_nulo_con_422_y_no_500(
+    client: TestClient, auth: AuthHeaders, body: dict[str, Any], field: str
+) -> None:
+    response = _post(client, auth, body)
+    assert response.status_code == 422
+    assert _fields(response) == [field]
+
+
 # Derived from R2.4
 @pytest.mark.parametrize("title", ["x" * 200, "ñ" * 200])
 def test_crear_acepta_titulo_de_200_caracteres(
