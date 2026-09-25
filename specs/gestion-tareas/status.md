@@ -1,6 +1,6 @@
 ---
 feature: gestion-tareas
-state: not-started
+state: in-progress
 methodology_version: "0.170"
 updated: 2026-09-25
 updated_by: "@jngomez21"
@@ -49,7 +49,7 @@ updated_by: "@jngomez21"
 
 ## Tasks
 
-T1: pending |
+T1: done | commit c4c8c38 | 2026-09-25
 T2: pending |
 T3: pending |
 T4: pending |
@@ -72,3 +72,4 @@ D1 (Proveedor de identidad OIDC): NEGOTIATING
 - 2026-09-25: spec creada con /spec-new en `feat/gestion-tareas` (base `pruebas`). Quedan 2 `[NEEDS CLARIFICATION]` (paginación del listado, zona horaria de "hoy") para `/spec-clarify`. `tasks.md` no se crea todavía: vacío dispara `[E10]` en spec-lint v0.170 (contradice a `/spec-new`); lo deriva `/spec-implement` tras G2.
 - 2026-09-25: `/spec-clarify` (UTC, paginación, última escritura gana, supuestos confirmados) y `/spec-design` (API `/v1` en inglés, tabla `tasks`, JWT, k6). `/spec-verify --pre-g2`: 0 CRITICAL, 0 HIGH; V2 y V3 aplicados, V1 (runtime sin decidir) aceptado como bloqueante de `/spec-promote`, no de implementación.
 - 2026-09-25: **G2 firmado** por jngomez@syc.com.co sobre `d0007d9` (self-approval: dev y tech lead son la misma persona). Dependencias nuevas de `design.md` § *Dependencias nuevas* aprobadas **con condición**: `pip-audit` sin vulnerabilidades conocidas. Si aparece alguna, se para y se consulta antes de continuar.
+- 2026-09-25: fase 0 cerrada (T1). `pip-audit`: sin vulnerabilidades conocidas (76 paquetes); condición del OK de dependencias cumplida. `cryptography/cobblestone.py` revisado: idéntico al de `pyca/cryptography` upstream (módulo legítimo de la v50). Pendiente para T2: motor de contenedores para testcontainers (la instalación de Podman por winget terminó con 1602, cancelada).
