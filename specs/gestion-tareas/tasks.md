@@ -29,7 +29,7 @@
 
 ## T1 — Scaffolding, dependencias aprobadas y toolchain [M]
 - **Cubre**: — (chore; habilita todas)
-- **Archivos**: `pyproject.toml`, `uv.lock`, `.python-version`, `.gitignore`, `.env.example`, `compose.yaml`, `src/greenfield/__init__.py`, `tests/__init__.py`
+- **Archivos**: `pyproject.toml`, `uv.lock`, `.python-version`, `.gitignore`, `.env.example`, `src/greenfield/__init__.py` (`compose.yaml` y la dependencia `testcontainers` se retiraron en AMD-001)
 - **Acceptance**:
   - [x] Python 3.13 fijado; `uv sync` instala sólo las dependencias de `design.md` § *Dependencias nuevas*
   - [x] `pip-audit` sin vulnerabilidades conocidas (condición del OK de G2: si reporta alguna, parar y consultar) — 2026-09-25: "No known vulnerabilities found", 76 paquetes en `uv.lock`
@@ -43,7 +43,8 @@
 - **Cubre**: R1.2, R2.2, R2.4, R2.5, R2.6 (restricciones de BD de respaldo)
 - **Archivos**: `src/greenfield/config.py`, `src/greenfield/db.py`, `src/greenfield/tasks/models.py`, `migrations/`, `alembic.ini`, `tests/conftest.py`, `tests/integration/test_migrations.py`
 - **Acceptance**:
-  - [ ] `alembic upgrade head` y `downgrade base` corren sobre Postgres de testcontainers
+  - [ ] `alembic upgrade head` y `downgrade base` corren sobre la base de `TEST_DATABASE_URL` (PostgreSQL 18 local, AMD-001)
+  - [ ] La fixture aborta con mensaje claro si `TEST_DATABASE_URL` falta o su base no termina en `_test`
   - [ ] Tests de los `CHECK` y del default de `status` (`# Derived from R2.2`, `R2.4`, `R2.5`, `R2.6`)
   - [ ] Lint + mypy limpios
 

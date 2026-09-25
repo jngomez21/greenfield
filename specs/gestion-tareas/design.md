@@ -54,7 +54,7 @@ flowchart LR
     R -- Depends --> S["db.get_session<br/>(1 transacción / request)"]
     R --> SV["tasks.service<br/>(filtra por owner_sub)"]
     SV --> M["tasks.models (ORM)"]
-    M --> PG[("PostgreSQL 17<br/>tabla tasks")]
+    M --> PG[("PostgreSQL 18<br/>tabla tasks")]
     R -. "excepciones de dominio" .-> E["errors (RFC 9457)"]
 ```
 
@@ -79,9 +79,8 @@ traduce las excepciones a `application/problem+json`.
 | `src/greenfield/tasks/service.py` | `create`, `get`, `list_tasks`, `update`, `delete`, `list_pending(today, overdue_only)` | R1.3, R1.4, R2.*, R3.*, R4.*, R5.*, R6.* |
 | `src/greenfield/tasks/router.py` | Los 6 endpoints de § Contratos; parseo de `task_id` y cálculo de `today` | Todas las R de la API |
 | `migrations/` (`env.py` + `versions/0001_create_tasks.py`) | DDL de § Modelo de datos | R1.2, R2.*, R6.2 (índices), NFR1 |
-| `tests/unit`, `tests/integration`, `tests/conftest.py` | Postgres con testcontainers, `TestClient`, emisor de tokens de prueba (llave RSA generada) | `stack/testing.md` |
+| `tests/unit`, `tests/integration`, `tests/conftest.py` | BD de pruebas vía `TEST_DATABASE_URL` (debe terminar en `_test`; migraciones al inicio, tablas vaciadas entre tests), `TestClient`, emisor de tokens de prueba (llave RSA generada) — AMD-001 | `stack/testing.md` |
 | `tests/load/tasks.js` | Script k6: siembra 10 usuarios × 1.000 tareas y mide p95 con thresholds | NFR1 |
-| `compose.yaml` | PostgreSQL 17 local para correr el servicio a mano | `stack/tech-stack.md` (desarrollo local) |
 
 ## Modelo de datos
 
@@ -237,7 +236,6 @@ N/A — la feature no publica ni consume eventos.
 | `pyjwt[crypto]` (trae `cryptography`) | Validar el JWT | MIT / Apache-2.0 | R1.1 |
 | *dev:* `pytest`, `pytest-cov` | Tests y cobertura | MIT | `stack/testing.md` |
 | *dev:* `httpx` | Requerido por `TestClient` | BSD-3 | `stack/testing.md` |
-| *dev:* `testcontainers[postgres]` | Postgres real en tests | Apache-2.0 | `stack/testing.md` |
 | *dev:* `ruff`, `mypy`, `pip-audit` | Lint, tipos, auditoría de vulnerabilidades | MIT / MIT / Apache-2.0 | `stack/tech-stack.md` |
 | *herramienta externa:* `k6` | Pruebas de carga | **AGPL-3.0** — binario aparte, no se enlaza ni se distribuye con el servicio | NFR1 |
 
@@ -262,7 +260,7 @@ validación real del token) y el middleware de log (métrica de éxito de 5xx).
   a la vez que D1.
 - Migraciones: `alembic upgrade head` como paso previo al arranque de cada
   despliegue.
-- Local: `compose.yaml` con PostgreSQL 17 y `uvicorn greenfield.main:app`.
+- Local: PostgreSQL 18 instalado en la máquina (base `greenfield`) y `uvicorn greenfield.main:app` (AMD-001).
 
 ### Configuración
 
@@ -273,6 +271,7 @@ validación real del token) y el middleware de log (métrica de éxito de 5xx).
 | `AUTH_AUDIENCE` | Config por ambiente | `aud` esperado (D1) |
 | `AUTH_JWKS_URL` | Config por ambiente | URL del JWKS del IdP (D1) |
 | `LOG_LEVEL` | Config por ambiente | Default `INFO` |
+| `TEST_DATABASE_URL` | Sólo pruebas (`.env` en local, secreto del pipeline en CI) | El nombre de la base debe terminar en `_test` (AMD-001) |
 
 Se commitea `.env.example` sólo con los nombres de las variables.
 
