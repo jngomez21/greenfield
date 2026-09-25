@@ -125,7 +125,7 @@
 - **Cubre**: NFR1
 - **Archivos**: `tests/load/tasks.js`, `tests/load/README.md`
 - **Acceptance**:
-  - [ ] Siembra 10 usuarios × 1.000 tareas; thresholds `p(95)<300` (operaciones individuales) y `p(95)<500` (listados)
+  - [x] Siembra 10 usuarios × 1.000 tareas; thresholds `p(95)<300` (operaciones individuales) y `p(95)<500` (listados) — validado con `node --check` y un arnés con dobles de k6 (siembra, 8 operaciones por iteración con sus tags, limpieza); la corrida real es T13
 
 ## T13 — Medir NFR1 en `pruebas` [S] [D1=LIVE]
 - **Cubre**: NFR1
