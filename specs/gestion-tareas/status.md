@@ -50,8 +50,8 @@ updated_by: "@jngomez21"
 ## Tasks
 
 T1: done | commit c4c8c38 | 2026-09-25
-T2: pending |
-T3: pending |
+T2: done | commit 31b86e0 | 2026-09-25
+T3: done | 2026-09-25
 T4: pending |
 T5: pending |
 T6: pending |

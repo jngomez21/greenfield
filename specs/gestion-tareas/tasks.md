@@ -52,8 +52,8 @@
 - **Cubre**: R1.1
 - **Archivos**: `src/greenfield/auth.py`, `src/greenfield/main.py`, `tests/conftest.py` (emisor de tokens), `tests/integration/test_auth.py`, `tests/unit/test_auth.py`
 - **Acceptance**:
-  - [ ] Token ausente, mal formado, expirado, con otra `aud`/`iss`, `alg=none` o `HS256` → 401 + `WWW-Authenticate: Bearer` (`# Derived from R1.1`)
-  - [ ] Token válido → `sub` disponible para los endpoints
+  - [x] Token ausente, mal formado, expirado, con otra `aud`/`iss`, `alg=none` o `HS256` → 401 + `WWW-Authenticate: Bearer` (`# Derived from R1.1`)
+  - [x] Token válido → `sub` disponible para los endpoints
 
 ## T4 — Errores RFC 9457 y access log [S]
 - **Cubre**: R3.2, NFR2

@@ -1,11 +1,15 @@
 import os
-from collections.abc import Iterator
+import time
+from collections.abc import Callable, Iterator
 from pathlib import Path
+from typing import Any
 from urllib.parse import urlsplit
 
+import jwt
 import pytest
 from alembic import command
 from alembic.config import Config
+from cryptography.hazmat.primitives.asymmetric import rsa
 from sqlalchemy import Engine, create_engine, text
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,6 +73,37 @@ def engine(test_database_url: str) -> Iterator[Engine]:
     eng = create_engine(test_database_url)
     yield eng
     eng.dispose()
+
+
+MakeToken = Callable[..., str]
+
+
+@pytest.fixture(scope="session")
+def signing_key() -> rsa.RSAPrivateKey:
+    """Llave del IdP de prueba (D1 en MOCK): se genera en cada corrida, nunca se guarda."""
+    return rsa.generate_private_key(public_exponent=65537, key_size=2048)
+
+
+@pytest.fixture(scope="session")
+def make_token(signing_key: rsa.RSAPrivateKey) -> MakeToken:
+    """Emite un JWT válido para `sub`; cada claim se puede sobrescribir o quitar (valor None)."""
+
+    def _make(
+        sub: str | None = "user-a", *, key: Any = None, algorithm: str = "RS256", **claims: Any
+    ) -> str:
+        now = int(time.time())
+        payload: dict[str, Any] = {
+            "sub": sub,
+            "iss": TEST_AUTH_ENV["AUTH_ISSUER"],
+            "aud": TEST_AUTH_ENV["AUTH_AUDIENCE"],
+            "iat": now,
+            "exp": now + 300,
+        }
+        payload.update(claims)
+        payload = {k: v for k, v in payload.items() if v is not None}
+        return jwt.encode(payload, signing_key if key is None else key, algorithm=algorithm)
+
+    return _make
 
 
 @pytest.fixture
