@@ -10,6 +10,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from cryptography.hazmat.primitives.asymmetric import rsa
+from fastapi.testclient import TestClient
 from sqlalchemy import Engine, create_engine, text
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -112,3 +113,25 @@ def db(engine: Engine) -> Engine:
     with engine.begin() as conn:
         conn.execute(text("TRUNCATE tasks"))
     return engine
+
+
+@pytest.fixture
+def client(db: Engine, signing_key: rsa.RSAPrivateKey) -> Iterator[TestClient]:
+    """La app real sobre la base *_test, con el IdP sustituido por la llave de prueba."""
+    from greenfield.auth import get_key_resolver
+    from greenfield.main import create_app
+
+    app = create_app()
+    public_key = signing_key.public_key()
+    app.dependency_overrides[get_key_resolver] = lambda: lambda token: public_key
+    with TestClient(app) as c:
+        yield c
+
+
+AuthHeaders = Callable[..., dict[str, str]]
+
+
+@pytest.fixture
+def auth(make_token: MakeToken) -> AuthHeaders:
+    """`auth("user-b")` → headers con un Bearer válido para ese usuario."""
+    return lambda sub="user-a": {"Authorization": f"Bearer {make_token(sub)}"}

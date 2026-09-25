@@ -70,8 +70,8 @@
 - **Cubre**: R1.2, R2.1, R2.2, R2.3, R2.4, R2.5, R2.6, R2.7, R2.8
 - **Archivos**: `src/greenfield/tasks/schemas.py`, `src/greenfield/tasks/service.py`, `src/greenfield/tasks/router.py`, `tests/integration/tasks/test_create.py`, `tests/unit/tasks/test_schemas.py`
 - **Acceptance**:
-  - [ ] 201 + `Location`; 422 por campo en cada validación; `extra="forbid"`
-  - [ ] Tests con `# Derived from R2.x` por requisito
+  - [x] 201 + `Location`; 422 por campo en cada validación; `extra="forbid"`
+  - [x] Tests con `# Derived from R2.x` por requisito
 
 ## T6 — Consultar y listar: `GET /v1/tasks/{id}`, `GET /v1/tasks` [M]
 - **Cubre**: R1.3, R1.4, R3.1, R3.2, R3.3, R3.4, R3.5, R3.6, R3.7, R3.8
