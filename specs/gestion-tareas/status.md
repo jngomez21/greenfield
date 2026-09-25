@@ -49,7 +49,19 @@ updated_by: "@jngomez21"
 
 ## Tasks
 
-<!-- Vacío hasta que /spec-implement derive tasks.md del diseño firmado en G2. -->
+T1: pending |
+T2: pending |
+T3: pending |
+T4: pending |
+T5: pending |
+T6: pending |
+T7: pending |
+T8: pending |
+T9: pending |
+T10: pending |
+T11: pending |
+T12: pending |
+T13: blocked | blocked_by: D1=LIVE y runtime de `pruebas` sin decidir (hallazgo V1)
 
 ## Dependencies snapshot
 
