@@ -43,10 +43,10 @@
 - **Cubre**: R1.2, R2.2, R2.4, R2.5, R2.6 (restricciones de BD de respaldo)
 - **Archivos**: `src/greenfield/config.py`, `src/greenfield/db.py`, `src/greenfield/tasks/models.py`, `migrations/`, `alembic.ini`, `tests/conftest.py`, `tests/integration/test_migrations.py`
 - **Acceptance**:
-  - [ ] `alembic upgrade head` y `downgrade base` corren sobre la base de `TEST_DATABASE_URL` (PostgreSQL 18 local, AMD-001)
-  - [ ] La fixture aborta con mensaje claro si `TEST_DATABASE_URL` falta o su base no termina en `_test`
-  - [ ] Tests de los `CHECK` y del default de `status` (`# Derived from R2.2`, `R2.4`, `R2.5`, `R2.6`)
-  - [ ] Lint + mypy limpios
+  - [x] `alembic upgrade head` y `downgrade base` corren sobre la base de `TEST_DATABASE_URL` (PostgreSQL 18 local, AMD-001)
+  - [x] La fixture aborta con mensaje claro si `TEST_DATABASE_URL` falta o su base no termina en `_test`
+  - [x] Tests de los `CHECK` y del default de `status` (`# Derived from R2.2`, `R2.4`, `R2.5`, `R2.6`)
+  - [x] Lint + mypy limpios
 
 ## T3 — Autenticación JWT y app base [M] [D1: MOCK]
 - **Cubre**: R1.1
