@@ -86,6 +86,10 @@ class TaskRead(BaseModel):
         return value.astimezone(UTC)
 
 
+class PendingTaskRead(TaskRead):
+    is_overdue: bool
+
+
 class Page[T](BaseModel):
     items: list[T]
     total: int

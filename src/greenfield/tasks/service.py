@@ -1,10 +1,10 @@
 """Reglas de negocio de tareas. Toda consulta filtra por dueño (R1.3, R1.4, DEC-6)."""
 
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import Select, func, select
 from sqlalchemy.orm import Session
 
 from greenfield.errors import NotFoundError
@@ -57,14 +57,35 @@ def delete(session: Session, owner: str, task_id: uuid.UUID) -> None:
     session.flush()
 
 
+def _page(
+    session: Session, query: Select[Task], order: tuple[Any, ...], limit: int, offset: int
+) -> tuple[list[Task], int]:
+    """Página + total con el mismo filtro (R3.7, R6.6, DEC-8)."""
+    total = session.scalar(select(func.count()).select_from(query.subquery())) or 0
+    items = session.scalars(query.order_by(*order).limit(limit).offset(offset))
+    return list(items), total
+
+
 def list_tasks(
     session: Session, owner: str, status: TaskStatus | None, limit: int, offset: int
 ) -> tuple[list[Task], int]:
     query = select(Task).where(Task.owner_sub == owner)
     if status is not None:
         query = query.where(Task.status == status.value)
-    total = session.scalar(select(func.count()).select_from(query.subquery())) or 0
-    items = session.scalars(
-        query.order_by(Task.created_at.desc(), Task.id.desc()).limit(limit).offset(offset)
-    )
-    return list(items), total
+    return _page(session, query, (Task.created_at.desc(), Task.id.desc()), limit, offset)
+
+
+def is_overdue(due_date: date | None, today: date) -> bool:
+    """Vencida = fecha límite anterior a hoy (UTC); la que vence hoy no lo está (R6.3)."""
+    return due_date is not None and due_date < today
+
+
+def list_pending(
+    session: Session, owner: str, today: date, overdue_only: bool, limit: int, offset: int
+) -> tuple[list[Task], int]:
+    # `<> 'completed'` (no IN pending/in_progress): así usa el índice parcial de pendientes.
+    query = select(Task).where(Task.owner_sub == owner, Task.status != TaskStatus.completed.value)
+    if overdue_only:
+        query = query.where(Task.due_date < today)
+    order = (Task.due_date.asc().nulls_last(), Task.created_at.asc(), Task.id.asc())
+    return _page(session, query, order, limit, offset)

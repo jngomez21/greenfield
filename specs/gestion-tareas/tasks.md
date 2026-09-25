@@ -109,7 +109,7 @@
 - **Cubre**: R6.1, R6.2, R6.3, R6.4, R6.5, R6.6
 - **Archivos**: `service.py` (`list_pending`), `router.py`, `schemas.py` (`PendingTaskRead`), `tests/unit/tasks/test_overdue.py`, `tests/integration/tasks/test_pending.py`
 - **Acceptance**:
-  - [ ] Sólo `pending`/`in_progress`; orden `due_date ASC NULLS LAST, created_at, id`; `is_overdue` con `today` inyectado (UTC); `overdue=true`; paginación
+  - [x] Sólo `pending`/`in_progress`; orden `due_date ASC NULLS LAST, created_at, id`; `is_overdue` con `today` inyectado (UTC); `overdue=true`; paginación
 
 ## T11 — Prueba independiente de P2 [S]
 - **Cubre**: R6.1, R6.2, R6.3, R6.4, R6.5, R6.6
