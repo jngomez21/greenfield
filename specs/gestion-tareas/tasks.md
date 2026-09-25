@@ -77,8 +77,9 @@
 - **Cubre**: R1.3, R1.4, R3.1, R3.2, R3.3, R3.4, R3.5, R3.6, R3.7, R3.8
 - **Archivos**: `service.py`, `router.py`, `schemas.py` (`Page[T]`), `tests/integration/tasks/test_read.py`
 - **Acceptance**:
-  - [ ] Tarea ajena, inexistente o ID inválido → mismo 404
-  - [ ] Paginación 50/1–100 con `total`; orden `created_at DESC, id DESC`; filtro por estado; listado vacío
+  - [x] Tarea ajena, inexistente o ID inválido → mismo 404
+  - [x] Paginación 50/1–100 con `total`; orden `created_at DESC, id DESC`; filtro por estado; listado vacío
+  - [x] (hallazgo) `created_at`/`updated_at` se serializan siempre en UTC, sin depender de la zona de la sesión de BD
 
 ## T7 — Actualizar: `PATCH /v1/tasks/{id}` [M]
 - **Cubre**: R1.3, R4.1, R4.2, R4.3, R4.4, R4.5, R4.6, R4.7

@@ -2,11 +2,19 @@
 
 import re
 import uuid
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 from enum import StrEnum
 from typing import Annotated, Any
 
-from pydantic import AfterValidator, BaseModel, BeforeValidator, ConfigDict, Field, field_validator
+from pydantic import (
+    AfterValidator,
+    BaseModel,
+    BeforeValidator,
+    ConfigDict,
+    Field,
+    field_serializer,
+    field_validator,
+)
 
 _ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
 
@@ -71,6 +79,11 @@ class TaskRead(BaseModel):
     due_date: date | None
     created_at: datetime
     updated_at: datetime
+
+    @field_serializer("created_at", "updated_at")
+    def _utc(self, value: datetime) -> datetime:
+        # La BD devuelve la zona de su sesión (p. ej. -05:00); la API siempre responde en UTC.
+        return value.astimezone(UTC)
 
 
 class Page[T](BaseModel):

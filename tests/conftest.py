@@ -1,6 +1,8 @@
 import os
 import time
+import uuid
 from collections.abc import Callable, Iterator
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
@@ -126,6 +128,43 @@ def client(db: Engine, signing_key: rsa.RSAPrivateKey) -> Iterator[TestClient]:
     app.dependency_overrides[get_key_resolver] = lambda: lambda token: public_key
     with TestClient(app) as c:
         yield c
+
+
+InsertTask = Callable[..., uuid.UUID]
+
+
+@pytest.fixture
+def insert_task(db: Engine) -> InsertTask:
+    """Inserta una tarea directo en BD, con `created_at` controlable (orden y empates)."""
+
+    def _insert(
+        owner: str = "user-a",
+        title: str = "x",
+        status: str = "pending",
+        due_date: date | None = None,
+        created_at: datetime | None = None,
+        task_id: uuid.UUID | None = None,
+    ) -> uuid.UUID:
+        task_id = task_id or uuid.uuid4()
+        ts = created_at or datetime.now(UTC)
+        with db.begin() as conn:
+            conn.execute(
+                text(
+                    "INSERT INTO tasks (id, owner_sub, title, status, due_date, created_at, "
+                    "updated_at) VALUES (:id, :owner, :title, :status, :due_date, :ts, :ts)"
+                ),
+                {
+                    "id": task_id,
+                    "owner": owner,
+                    "title": title,
+                    "status": status,
+                    "due_date": due_date,
+                    "ts": ts,
+                },
+            )
+        return task_id
+
+    return _insert
 
 
 AuthHeaders = Callable[..., dict[str, str]]
