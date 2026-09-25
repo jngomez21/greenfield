@@ -1,0 +1,51 @@
+[project]
+name = "greenfield"
+version = "0.1.0"
+description = "Servicio de gestión de tareas personales"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "alembic>=1.20.0",
+    "fastapi>=0.141.1",
+    "psycopg[binary]>=3.3.6",
+    "pyjwt[crypto]>=2.15.0",
+    "sqlalchemy>=2.1.1",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12,<0.13"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106"]  # assert y credenciales de prueba
+
+[tool.mypy]
+strict = true
+files = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=greenfield --cov-report=term-missing"
+
+[tool.coverage.run]
+omit = ["src/greenfield/main.py"]  # wiring, excluido por stack/testing.md
+
+[tool.coverage.report]
+fail_under = 85
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "mypy>=2.3.1",
+    "pip-audit>=2.10.1",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.16.9",
+]

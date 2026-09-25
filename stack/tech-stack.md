@@ -24,7 +24,7 @@
 
 ## Persistencia
 
-- **PostgreSQL 17**.
+- **PostgreSQL 18** (subido desde 17 en AMD-001 de `gestion-tareas`: misma versión en desarrollo, pruebas y despliegue).
 - **SQLAlchemy 2.x** (ORM, estilo 2.0 con `Mapped[...]`), driver **psycopg 3**.
 - **Alembic** para migraciones. Todo cambio de esquema pasa por una migración
   versionada; nunca `create_all()` fuera de tests.
@@ -40,7 +40,9 @@
 ## Tests
 
 - **pytest**, con `fastapi.testclient.TestClient` para la API.
-- **testcontainers** (PostgreSQL) para integración contra una BD real.
+- Integración contra un **PostgreSQL 18 real** indicado en `TEST_DATABASE_URL` (en local, el servidor
+  instalado en la máquina; en CI, un servicio PostgreSQL del pipeline). Sin contenedores: el proxy
+  corporativo bloquea la descarga de imágenes de Docker Hub (AMD-001).
 - Detalle de política en `stack/testing.md`.
 
 ## Lint y formato
@@ -53,14 +55,17 @@
 
 `TBD` — igual que `repo-config.yaml > runtime.type`. No bloquea desarrollo ni
 tests locales; se resuelve antes de la primera promoción a `pruebas`. Local:
-`docker compose` con PostgreSQL.
+instancia PostgreSQL 18 propia del desarrollador (`initdb` con los binarios ya instalados,
+datos en `%LOCALAPPDATA%\greenfield\pgdata`, puerto **5433**, sin permisos de administrador), con
+las bases `greenfield` (ejecución manual) y `greenfield_test` (pruebas). Se arranca con `pg_ctl`
+(ver `README.md`).
 
 ## Versiones pineadas
 
 | Componente | Versión |
 |---|---|
 | Python | 3.13.x |
-| PostgreSQL | 17.x |
+| PostgreSQL | 18.x |
 | FastAPI | última 0.x estable al crear `pyproject.toml`, fijada en `uv.lock` |
 | SQLAlchemy | 2.x |
 | Alembic | 1.x |

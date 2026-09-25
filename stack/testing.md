@@ -8,7 +8,7 @@
 - **Unit**: reglas de negocio de `service` sin BD cuando la lógica lo permita
   (validaciones, transiciones de estado, cálculo de vencimiento).
 - **Integration**: cada endpoint vía `TestClient` contra **PostgreSQL real**
-  (testcontainers), con auth incluida (tokens firmados en la fixture).
+  (la base indicada en `TEST_DATABASE_URL`), con auth incluida (tokens firmados en la fixture).
   Es el nivel principal para un CRUD.
 - **Sin e2e ni load** por ahora: no hay UI y no hay NFR de carga. Si un `R*.*`
   declara una NFR medible de rendimiento, se agrega el nivel correspondiente.
@@ -25,7 +25,9 @@ Cada `R*.*` declara en `requirements.md` qué nivel lo cubre.
 
 - `pytest`, `pytest-cov`.
 - `fastapi.testclient.TestClient` (usa `httpx`).
-- `testcontainers[postgres]` (requiere Docker local o en CI).
+- PostgreSQL 18 real vía `TEST_DATABASE_URL` (sin contenedores, AMD-001). La fixture aplica las
+  migraciones al inicio y vacía las tablas entre tests. **Se niega a correr si el nombre de la base
+  no termina en `_test`**: protege contra vaciar una base con datos reales por error de configuración.
 
 ## Convención `# Derived from R*.*`
 
@@ -41,7 +43,7 @@ huérfanos (sin `R*.*` válido tras un amendment) o `R*.*` sin cobertura.
 
 ## Política de mocks
 
-- **BD propia: nunca se mockea** → testcontainers.
+- **BD propia: nunca se mockea** → PostgreSQL real de `TEST_DATABASE_URL`.
 - **IdP: no se llama en tests** → par de llaves generado por la fixture y JWKS
   servido localmente o inyectado vía `dependency_overrides`.
 - Terceros futuros (si aparecen como `D-N`): doble explícito con la regla

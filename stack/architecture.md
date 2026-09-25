@@ -27,7 +27,7 @@ src/greenfield/
     └── schemas.py   # schemas Pydantic de entrada/salida
 migrations/          # Alembic (env.py + versions/)
 tests/
-├── conftest.py      # fixtures: Postgres (testcontainers), client, tokens
+├── conftest.py      # fixtures: BD de pruebas (TEST_DATABASE_URL), client, tokens
 ├── unit/
 └── integration/
 ```
