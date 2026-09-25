@@ -51,8 +51,8 @@ updated_by: "@jngomez21"
 
 T1: done | commit c4c8c38 | 2026-09-25
 T2: done | commit 31b86e0 | 2026-09-25
-T3: done | 2026-09-25
-T4: pending |
+T3: done | commit f6ae361 | 2026-09-25
+T4: done | 2026-09-25
 T5: pending |
 T6: pending |
 T7: pending |
@@ -74,3 +74,4 @@ D1 (Proveedor de identidad OIDC): NEGOTIATING
 - 2026-09-25: **G2 firmado** por jngomez@syc.com.co sobre `d0007d9` (self-approval: dev y tech lead son la misma persona). Dependencias nuevas de `design.md` § *Dependencias nuevas* aprobadas **con condición**: `pip-audit` sin vulnerabilidades conocidas. Si aparece alguna, se para y se consulta antes de continuar.
 - 2026-09-25: fase 0 cerrada (T1). `pip-audit`: sin vulnerabilidades conocidas (76 paquetes); condición del OK de dependencias cumplida. `cryptography/cobblestone.py` revisado: idéntico al de `pyca/cryptography` upstream (módulo legítimo de la v50). Pendiente para T2: motor de contenedores para testcontainers (la instalación de Podman por winget terminó con 1602, cancelada).
 - 2026-09-25: Podman 6.0.2 quedó operativo (máquina `podman-machine-default`), pero el proxy corporativo responde 407 al bajar imágenes de Docker Hub. **AMD-001**: pruebas contra PostgreSQL 18 local (`TEST_DATABASE_URL`, base `*_test`) y stack a PostgreSQL 18; se retiran testcontainers y `compose.yaml`. Ver `amendments.md`. T2 espera a que el dev cree el rol y las bases en pgAdmin.
+- 2026-09-25: fase 1 cerrada (T2–T4). 43 tests en verde, cobertura 99 %, ruff y mypy limpios. Pendientes señalados: (a) los `message` por campo de los 422 salen en inglés (texto de Pydantic), el resto de mensajes de error en español; (b) Starlette sugiere `httpx2` para `TestClient` (aviso, no error; sería dependencia nueva); (c) con `AUTH_*` vacías en `.env` la app no arranca a mano hasta configurar D1 (diseño: falla al arrancar sin configuración).

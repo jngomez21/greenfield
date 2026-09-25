@@ -5,7 +5,7 @@ from functools import lru_cache
 from typing import Annotated, Any
 
 import jwt
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from greenfield.config import get_settings
@@ -39,6 +39,7 @@ def _unauthorized() -> HTTPException:
 
 
 def get_current_user(
+    request: Request,
     credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(_bearer)],
     resolve_key: Annotated[KeyResolver, Depends(get_key_resolver)],
 ) -> str:
@@ -61,4 +62,5 @@ def get_current_user(
         raise  # IdP inaccesible: es una falla del servidor, no del cliente
     except jwt.PyJWTError:
         raise _unauthorized() from None
-    return str(claims["sub"])
+    request.state.sub = sub = str(claims["sub"])  # para el access log
+    return sub

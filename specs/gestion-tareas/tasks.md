@@ -59,8 +59,8 @@
 - **Cubre**: R3.2, NFR2
 - **Archivos**: `src/greenfield/errors.py`, `src/greenfield/access_log.py`, `src/greenfield/main.py`, `tests/unit/test_errors.py`
 - **Acceptance**:
-  - [ ] `NotFoundError` → 404, `RequestValidationError` → 422 con `errors[{field, message}]`, excepción no controlada → 500 genérico; todos `application/problem+json`
-  - [ ] Access log con método, ruta, status, duración y `sub`, sin cuerpo
+  - [x] `NotFoundError` → 404, `RequestValidationError` → 422 con `errors[{field, message}]`, excepción no controlada → 500 genérico; todos `application/problem+json`
+  - [x] Access log con método, ruta, status, duración y `sub`, sin cuerpo
 
 **Checkpoint fase 1**: la app arranca; una petición sin token da 401; migración aplicada en tests; cobertura ≥ 85 %.
 
