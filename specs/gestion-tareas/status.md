@@ -58,8 +58,8 @@ T6: done | commit 0473fdc | 2026-09-25
 T7: done | commit f48a558 | 2026-09-25
 T8: done | commit 11519e7 | 2026-09-25
 T9: done | commit 55994ee | 2026-09-25
-T10: pending |
-T11: pending |
+T10: done | commit c3c3d87 | 2026-09-25
+T11: done | commit 51ec0a5 | 2026-09-25
 T12: pending |
 T13: blocked | blocked_by: D1=LIVE y runtime de `pruebas` sin decidir (hallazgo V1)
 
@@ -76,3 +76,4 @@ D1 (Proveedor de identidad OIDC): NEGOTIATING
 - 2026-09-25: Podman 6.0.2 quedó operativo (máquina `podman-machine-default`), pero el proxy corporativo responde 407 al bajar imágenes de Docker Hub. **AMD-001**: pruebas contra PostgreSQL 18 local (`TEST_DATABASE_URL`, base `*_test`) y stack a PostgreSQL 18; se retiran testcontainers y `compose.yaml`. Ver `amendments.md`. T2 espera a que el dev cree el rol y las bases en pgAdmin.
 - 2026-09-25: fase 1 cerrada (T2–T4). 43 tests en verde, cobertura 99 %, ruff y mypy limpios. Pendientes señalados: (a) los `message` por campo de los 422 salen en inglés (texto de Pydantic), el resto de mensajes de error en español; (b) Starlette sugiere `httpx2` para `TestClient` (aviso, no error; sería dependencia nueva); (c) con `AUTH_*` vacías en `.env` la app no arranca a mano hasta configurar D1 (diseño: falla al arrancar sin configuración).
 - 2026-09-25: fase 2 cerrada (T5–T9): slice P1 completo. 131 tests en verde, cobertura 100 %, ruff y mypy limpios; los 29 `R*.*` de P1 (R1–R5) citados por al menos un test. Hallazgos durante la fase: (1) la sesión de BD usa `Depends(..., scope="function")` para confirmar la transacción **antes** de responder (en FastAPI 0.141 el default cierra la dependencia después de enviar la respuesta); (2) los instantes se serializan en UTC en `TaskRead` porque la BD devuelve la zona de su sesión (-05:00). P1 queda listo para `pruebas` salvo el runtime y D1 (hallazgo V1).
+- 2026-09-25: fase 3 cerrada (T10–T11): slice P2 completo. 149 tests en verde, cobertura 100 %, ruff y mypy limpios; los 35 `R*.*` de la spec y NFR2 citados por al menos un test. "Hoy" se inyecta como dependencia `get_today` (UTC) para fijarlo en tests. Queda la fase final: T12 (script k6 de NFR1) y T13 (bloqueada por D1 y runtime).
