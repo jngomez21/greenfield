@@ -53,11 +53,11 @@ T1: done | commit c4c8c38 | 2026-09-25
 T2: done | commit 31b86e0 | 2026-09-25
 T3: done | commit f6ae361 | 2026-09-25
 T4: done | commit 142f9c6 | 2026-09-25
-T5: pending |
-T6: pending |
-T7: pending |
-T8: pending |
-T9: pending |
+T5: done | commit 2c1f05d | 2026-09-25
+T6: done | commit 0473fdc | 2026-09-25
+T7: done | commit f48a558 | 2026-09-25
+T8: done | commit 11519e7 | 2026-09-25
+T9: done | commit 55994ee | 2026-09-25
 T10: pending |
 T11: pending |
 T12: pending |
@@ -75,3 +75,4 @@ D1 (Proveedor de identidad OIDC): NEGOTIATING
 - 2026-09-25: fase 0 cerrada (T1). `pip-audit`: sin vulnerabilidades conocidas (76 paquetes); condición del OK de dependencias cumplida. `cryptography/cobblestone.py` revisado: idéntico al de `pyca/cryptography` upstream (módulo legítimo de la v50). Pendiente para T2: motor de contenedores para testcontainers (la instalación de Podman por winget terminó con 1602, cancelada).
 - 2026-09-25: Podman 6.0.2 quedó operativo (máquina `podman-machine-default`), pero el proxy corporativo responde 407 al bajar imágenes de Docker Hub. **AMD-001**: pruebas contra PostgreSQL 18 local (`TEST_DATABASE_URL`, base `*_test`) y stack a PostgreSQL 18; se retiran testcontainers y `compose.yaml`. Ver `amendments.md`. T2 espera a que el dev cree el rol y las bases en pgAdmin.
 - 2026-09-25: fase 1 cerrada (T2–T4). 43 tests en verde, cobertura 99 %, ruff y mypy limpios. Pendientes señalados: (a) los `message` por campo de los 422 salen en inglés (texto de Pydantic), el resto de mensajes de error en español; (b) Starlette sugiere `httpx2` para `TestClient` (aviso, no error; sería dependencia nueva); (c) con `AUTH_*` vacías en `.env` la app no arranca a mano hasta configurar D1 (diseño: falla al arrancar sin configuración).
+- 2026-09-25: fase 2 cerrada (T5–T9): slice P1 completo. 131 tests en verde, cobertura 100 %, ruff y mypy limpios; los 29 `R*.*` de P1 (R1–R5) citados por al menos un test. Hallazgos durante la fase: (1) la sesión de BD usa `Depends(..., scope="function")` para confirmar la transacción **antes** de responder (en FastAPI 0.141 el default cierra la dependencia después de enviar la respuesta); (2) los instantes se serializan en UTC en `TaskRead` porque la BD devuelve la zona de su sesión (-05:00). P1 queda listo para `pruebas` salvo el runtime y D1 (hallazgo V1).
