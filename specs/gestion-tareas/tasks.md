@@ -31,9 +31,9 @@
 - **Cubre**: — (chore; habilita todas)
 - **Archivos**: `pyproject.toml`, `uv.lock`, `.python-version`, `.gitignore`, `.env.example`, `compose.yaml`, `src/greenfield/__init__.py`, `tests/__init__.py`
 - **Acceptance**:
-  - [ ] Python 3.13 fijado; `uv sync` instala sólo las dependencias de `design.md` § *Dependencias nuevas*
-  - [ ] `pip-audit` sin vulnerabilidades conocidas (condición del OK de G2: si reporta alguna, parar y consultar)
-  - [ ] `ruff check`, `ruff format --check`, `mypy src/` y `pytest` corren en verde
+  - [x] Python 3.13 fijado; `uv sync` instala sólo las dependencias de `design.md` § *Dependencias nuevas*
+  - [x] `pip-audit` sin vulnerabilidades conocidas (condición del OK de G2: si reporta alguna, parar y consultar) — 2026-09-25: "No known vulnerabilities found", 76 paquetes en `uv.lock`
+  - [x] `ruff check`, `ruff format --check` y `mypy src/` en verde; `pytest` ejecuta y, con 0 tests, el umbral de cobertura (85 %) falla como se esperaba: se exige desde T2
 
 **Checkpoint fase 0**: toolchain verde sobre el esqueleto vacío.
 
