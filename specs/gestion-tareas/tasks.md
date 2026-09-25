@@ -85,8 +85,8 @@
 - **Cubre**: R1.3, R4.1, R4.2, R4.3, R4.4, R4.5, R4.6, R4.7
 - **Archivos**: `service.py`, `router.py`, `schemas.py` (`TaskUpdate`), `tests/integration/tasks/test_update.py`
 - **Acceptance**:
-  - [ ] Ausente = no cambia; `null` quita `description`/`due_date`; `null` en `title`/`status` → 422 sin cambios
-  - [ ] `updated_at` avanza sólo si hay modificación; transición libre de estados; última escritura gana
+  - [x] Ausente = no cambia; `null` quita `description`/`due_date`; `null` en `title`/`status` → 422 sin cambios
+  - [x] `updated_at` avanza sólo si hay modificación; transición libre de estados; última escritura gana
 
 ## T8 — Eliminar: `DELETE /v1/tasks/{id}` [S]
 - **Cubre**: R1.3, R5.1, R5.2

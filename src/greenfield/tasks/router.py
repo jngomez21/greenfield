@@ -10,7 +10,7 @@ from greenfield.auth import get_current_user
 from greenfield.db import get_session
 from greenfield.errors import NotFoundError
 from greenfield.tasks import service
-from greenfield.tasks.schemas import Page, TaskCreate, TaskRead, TaskStatus
+from greenfield.tasks.schemas import Page, TaskCreate, TaskRead, TaskStatus, TaskUpdate
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -56,3 +56,12 @@ def list_tasks(
 @router.get("/{task_id}")
 def get_task(task_id: str, sub: CurrentUser, session: DbSession) -> TaskRead:
     return TaskRead.model_validate(service.get(session, sub, _parse_id(task_id)))
+
+
+@router.patch("/{task_id}")
+def update_task(task_id: str, data: TaskUpdate, sub: CurrentUser, session: DbSession) -> TaskRead:
+    # Sólo los campos presentes en el body (ausente = no cambia; DEC-3).
+    changes = {field: getattr(data, field) for field in data.model_fields_set}
+    if "status" in changes:
+        changes["status"] = changes["status"].value
+    return TaskRead.model_validate(service.update(session, sub, _parse_id(task_id), changes))

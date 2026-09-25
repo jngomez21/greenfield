@@ -2,6 +2,7 @@
 
 import uuid
 from datetime import UTC, datetime
+from typing import Any
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -33,6 +34,20 @@ def get(session: Session, owner: str, task_id: uuid.UUID) -> Task:
     task = session.scalar(select(Task).where(Task.id == task_id, Task.owner_sub == owner))
     if task is None:
         raise NotFoundError
+    return task
+
+
+def update(session: Session, owner: str, task_id: uuid.UUID, changes: dict[str, Any]) -> Task:
+    """Aplica sólo los campos enviados; el UPDATE lleva sólo lo que cambió (R4.1, R4.7)."""
+    task = get(session, owner, task_id)
+    modified = False
+    for field, value in changes.items():
+        if getattr(task, field) != value:
+            setattr(task, field, value)
+            modified = True
+    if modified:  # R4.2: sin cambio real no se toca updated_at
+        task.updated_at = datetime.now(UTC)
+        session.flush()
     return task
 
 
