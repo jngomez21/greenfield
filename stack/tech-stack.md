@@ -1,7 +1,7 @@
 # Tech stack
 
-> **Servicio**: `<TODO: nombre del servicio>`
-> **Estado**: TODO — completar durante bootstrap (ver AGENTS.md § Bootstrap)
+> **Servicio**: `greenfield`
+> **Estado**: completo (bootstrap 2026-09-25). Deploy target `TBD` a propósito — ver abajo.
 
 > El Service Agent se **negará a generar código** mientras este archivo
 > tenga un `TODO` **que no cuelgue de nada** — lenguaje, framework,
@@ -17,38 +17,55 @@
 
 ## Lenguaje y framework
 
-<!-- TODO: ¿Qué lenguaje (TS, Python, Go, Rust, Kotlin, .NET, etc.)?
-¿Qué framework principal (Next.js, FastAPI, Spring, Actix, etc.)?
-Versiones específicas. -->
+- **Python 3.13**.
+- **FastAPI** (API HTTP/JSON) sobre **Uvicorn**. Validación y schemas con
+  **Pydantic v2** (viene con FastAPI). El OpenAPI lo genera FastAPI; no se
+  mantiene a mano.
 
 ## Persistencia
 
-<!-- TODO: ¿Base de datos (Postgres, MySQL, MongoDB, DynamoDB, etc.)?
-¿ORM o query builder (Prisma, SQLAlchemy, Entity Framework, GORM)?
-¿Cache (Redis, Memcached)? Versiones. -->
+- **PostgreSQL 17**.
+- **SQLAlchemy 2.x** (ORM, estilo 2.0 con `Mapped[...]`), driver **psycopg 3**.
+- **Alembic** para migraciones. Todo cambio de esquema pasa por una migración
+  versionada; nunca `create_all()` fuera de tests.
+- Sin cache. Se agrega cuando una métrica lo justifique.
 
 ## Build y package manager
 
-<!-- TODO: package manager (pnpm/npm/yarn, pip/poetry, cargo, maven,
-gradle, etc.), bundler/build tool si aplica, lockfile a commitear. -->
+- **uv** (gestión de dependencias y entornos). `pyproject.toml` como fuente
+  única; **`uv.lock` se commitea**.
+- Sin bundler (no aplica).
+- Imagen de contenedor: `Dockerfile` multi-stage cuando se decida el deploy target.
 
 ## Tests
 
-<!-- TODO: framework de tests (vitest, jest, pytest, junit, go test,
-etc.). Detalle de política en stack/testing.md. -->
+- **pytest**, con `fastapi.testclient.TestClient` para la API.
+- **testcontainers** (PostgreSQL) para integración contra una BD real.
+- Detalle de política en `stack/testing.md`.
 
 ## Lint y formato
 
-<!-- TODO: linter (eslint/ruff/golangci-lint/clippy), formatter
-(prettier/black/gofmt/rustfmt), pre-commit hooks si aplica. -->
+- **ruff** para lint y formato (`ruff check` + `ruff format`).
+- Tipado: anotaciones obligatorias en código de `src/`; chequeo con **mypy**
+  en modo `strict` sobre `src/`.
 
 ## Deploy target
 
-<!-- TODO: OpenShift / Kubernetes / Vercel / AWS Lambda / static host
-(S3+CloudFront, Cloudflare Pages) / npm registry (para library) / etc.
-Cruzar con `repo-config.yaml > runtime.type`. -->
+`TBD` — igual que `repo-config.yaml > runtime.type`. No bloquea desarrollo ni
+tests locales; se resuelve antes de la primera promoción a `pruebas`. Local:
+`docker compose` con PostgreSQL.
 
 ## Versiones pineadas
 
-<!-- TODO: versiones de runtime y librerías críticas para evitar drift.
-Ej. Node 22.x, .NET 9.0, Python 3.13, etc. -->
+| Componente | Versión |
+|---|---|
+| Python | 3.13.x |
+| PostgreSQL | 17.x |
+| FastAPI | última 0.x estable al crear `pyproject.toml`, fijada en `uv.lock` |
+| SQLAlchemy | 2.x |
+| Alembic | 1.x |
+| psycopg | 3.x |
+| PyJWT (con `cryptography`) | 2.x — validación de JWT, ver `stack/security.md` |
+
+Las versiones exactas viven en `uv.lock`. Añadir una dependencia nueva requiere
+OK explícito (AGENTS.md § *Dependencias nuevas*).

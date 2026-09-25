@@ -1,7 +1,7 @@
 # Constraints
 
-> **Servicio**: `<TODO: nombre del servicio>`
-> **Estado**: TODO — completar durante bootstrap
+> **Servicio**: `greenfield`
+> **Estado**: completo (bootstrap 2026-09-25)
 
 > Lo que está **prohibido o desaconsejado** en este repo. Anti-patrones
 > específicos del proyecto. Cada constraint con justificación corta
@@ -9,31 +9,44 @@
 
 ## Librerías / dependencias prohibidas
 
-<!-- TODO: ej. "no usar Moment.js, usar Temporal o date-fns por
-tamaño de bundle". Listar con justificación. -->
+- **`python-jose`**: sin mantenimiento activo y con CVEs históricos. Usar PyJWT.
+- **`passlib` / hashing de contraseñas propio**: el servicio no gestiona
+  contraseñas (auth delegada al IdP, `stack/security.md`).
+- **Otro ORM u otro gestor de paquetes** (Tortoise, Peewee, poetry, pip-tools):
+  duplican lo que ya hacen SQLAlchemy y uv.
+- Toda dependencia nueva requiere OK explícito (AGENTS.md § *Dependencias nuevas*).
 
 ## Patterns desaconsejados
 
-<!-- TODO: ej. "no usar `any` en TypeScript salvo con justificación
-explícita en comment", "no usar `eval` ni `Function()` constructor",
-"no swallow excepciones en silencio". -->
+- **SQL armado concatenando strings**: siempre el ORM o `text()` con parámetros
+  bind. Evita inyección SQL.
+- **Devolver modelos ORM como respuesta**: siempre un schema `*Read`. Evita
+  filtrar columnas internas (`owner_sub`).
+- **Queries a recursos de usuario sin filtrar por `owner_sub`**: es un fallo de
+  autorización (IDOR).
+- **`datetime.now()` / `utcnow()` sin zona**: usar `datetime.now(UTC)`. Los
+  naive rompen las comparaciones de fechas límite.
+- **`except Exception: pass`** o tragarse errores sin loguear ni relanzar.
+- **Repository/interfaces con una sola implementación**: ver
+  `stack/architecture.md`.
 
 ## Cosas que NO se deben hacer
 
-<!-- TODO: operacionales — ej. "no commitear lockfile sin pre-revisar
-diff", "no ejecutar `git push --force` a main/qa/pruebas", "no
-deshabilitar tests para hacer pasar CI", "no usar `--no-verify` en
-commits". -->
+- `git push --force` a `main`, `qa` o `pruebas`.
+- Deshabilitar o marcar `skip` tests para que pase CI.
+- `--no-verify` en commits.
+- Editar una migración de Alembic ya mergeada: se crea una nueva.
+- Commitear `.env` o credenciales.
 
 ## Restricciones de runtime / infra
 
-<!-- TODO: ej. "no usar features de la cloud que no estén disponibles
-en la región declarada en stack/security.md", "no usar componentes
-serverless sin discutir cold-start con Ops". -->
+- La configuración entra sólo por variables de entorno (12-factor): nada de
+  valores por ambiente hardcodeados.
+- El servicio no guarda estado en memoria entre requests (debe poder escalar
+  horizontalmente).
 
 ## Anti-patrones del methodology aplicados aquí
 
-<!-- TODO: si hay anti-patrones de §18 del methodology que aplican
-especialmente a este repo (ej. *"specs centralizadas"*,
-*"dependencia pedida en chat sin work item"*), copiarlos aquí como
-recordatorio explícito. -->
+- **Código antes de G2**: no se escribe código de producción sin requirements +
+  design firmados.
+- **Lógica improvisada**: si la spec es ambigua, se para y se pregunta (§3.12).

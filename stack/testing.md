@@ -1,62 +1,74 @@
 # Testing
 
-> **Servicio**: `<TODO: nombre del servicio>`
-> **Estado**: TODO — completar durante bootstrap
+> **Servicio**: `greenfield`
+> **Estado**: completo (bootstrap 2026-09-25)
 
 ## Niveles obligatorios
 
-<!-- TODO: ¿cuáles de unit / integration / e2e / contract / load /
-accessibility / security se exigen para cada feature? Cada `R*.*`
-en `requirements.md` declara qué niveles lo cubren. -->
+- **Unit**: reglas de negocio de `service` sin BD cuando la lógica lo permita
+  (validaciones, transiciones de estado, cálculo de vencimiento).
+- **Integration**: cada endpoint vía `TestClient` contra **PostgreSQL real**
+  (testcontainers), con auth incluida (tokens firmados en la fixture).
+  Es el nivel principal para un CRUD.
+- **Sin e2e ni load** por ahora: no hay UI y no hay NFR de carga. Si un `R*.*`
+  declara una NFR medible de rendimiento, se agrega el nivel correspondiente.
+
+Cada `R*.*` declara en `requirements.md` qué nivel lo cubre.
 
 ## Cobertura mínima
 
-<!-- TODO: ¿% por nivel? Ej. unit ≥ 80%, integration ≥ 60%, e2e ≥
-"flujos críticos cubiertos" (no porcentaje sino lista). NO usar
-exclusions del coverage para inflar el % — declarar qué se excluye
-y por qué. -->
+- **≥ 85 % de líneas** sobre `src/` (`pytest --cov=greenfield --cov-fail-under=85`).
+- **100 % de los `R*.*`** con al menos un test que los cite (lo verifica `/spec-verify`).
+- Exclusiones permitidas: `main.py` (wiring) y `migrations/`. Nada más.
 
 ## Frameworks
 
-<!-- TODO: unit (vitest/jest/pytest/junit/go test), integration (lo
-mismo o testcontainers), e2e (playwright/cypress/selenium), contract
-(pact/spring cloud contract), load (k6/locust/gatling), accessibility
-(axe-core). Cruzar con `stack/tech-stack.md`. -->
+- `pytest`, `pytest-cov`.
+- `fastapi.testclient.TestClient` (usa `httpx`).
+- `testcontainers[postgres]` (requiere Docker local o en CI).
 
-## Convención `// Derived from R*.*`
+## Convención `# Derived from R*.*`
 
-Cada test debe declarar el `R*.*` que cubre como comment al inicio:
+Cada test declara el `R*.*` que cubre en un comentario justo antes del `def`:
 
+```python
+# Derived from R1.2 (título obligatorio)
+def test_crear_tarea_sin_titulo_devuelve_422(client, auth_headers): ...
 ```
-// Derived from R1.2 (token entropy)
-test('reset token has 256 bits of entropy', () => { ... });
-```
 
-Esto permite a `/spec-verify` cruzar tests ↔ requirements y detectar
-tests huérfanos (sin `R*.*` válido tras Amendment) o `R*.*` sin
-cobertura.
+Esto permite a `/spec-verify` cruzar tests ↔ requirements y detectar tests
+huérfanos (sin `R*.*` válido tras un amendment) o `R*.*` sin cobertura.
 
 ## Política de mocks
 
-<!-- TODO: cuándo usar mocks (D-N no LIVE, 3rd party como Stripe),
-cuándo NO (propia DB → testcontainer, propia lib → import directo).
-Cruzar con §6 *Mocks como ciudadanos de primera clase* del methodology
-y la regla *Ready to unmock*. -->
+- **BD propia: nunca se mockea** → testcontainers.
+- **IdP: no se llama en tests** → par de llaves generado por la fixture y JWKS
+  servido localmente o inyectado vía `dependency_overrides`.
+- Terceros futuros (si aparecen como `D-N`): doble explícito con la regla
+  *Ready to unmock* (§6 del methodology).
 
 ## Estructura de archivos
 
-<!-- TODO: co-located (`src/foo.ts` + `src/foo.test.ts`) vs separate
-dir (`tests/`). Naming exacto de archivos. -->
+```
+tests/
+├── conftest.py
+├── unit/<modulo>/test_<tema>.py
+└── integration/<modulo>/test_<endpoint>.py
+```
+
+Nombres de test descriptivos en español: `test_<accion>_<condicion>_<resultado>`.
 
 ## TDD vs test-after
 
-<!-- TODO: política. La metodología (§4 Fase 4) recomienda **tests
-primero** (TDD) cuando hay lógica de negocio compleja; test-after es
-aceptable para boilerplate. `/spec-implement` aplica tests primero
-por default — declarar excepciones explícitas. -->
+**Tests primero** para reglas de negocio y para cada `R*.*` de comportamiento
+(es el default de `/spec-implement`). Test-after aceptable para wiring
+(`main.py`, `config.py`, `db.py`).
 
 ## CI gates de tests
 
-<!-- TODO: qué pipelines corren qué niveles, en qué momento del
-flujo (PR / pre-merge / pre-deploy). Cruzar con
-`repo-config.yaml > environments[].gate`. -->
+- En cada PR: `ruff check`, `ruff format --check`, `mypy src/`,
+  `pytest` (unit + integration) con el umbral de cobertura y `pip-audit`.
+- La promoción a `pruebas`/`qa`/`main` exige esos mismos checks en verde más los
+  gates de `repo-config.yaml > environments[].gate`.
+- El proveedor de CI (GitHub Actions / Azure Pipelines) se decide junto con el
+  deploy target.

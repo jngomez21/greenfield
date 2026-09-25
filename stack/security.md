@@ -1,51 +1,63 @@
 # Security
 
-> **Servicio**: `<TODO: nombre del servicio>`
-> **Estado**: TODO — completar durante bootstrap
+> **Servicio**: `greenfield`
+> **Estado**: completo (bootstrap 2026-09-25). Proveedor de identidad concreto `TBD`: sólo cambia configuración.
 
 ## Autenticación
 
-<!-- TODO: ¿JWT / session / OAuth 2.0 / OIDC / mTLS / API key /
-basic auth? Proveedor (Auth0, Okta, Azure AD, Keycloak, propio). -->
+- **JWT Bearer emitido por un IdP externo (OIDC)**. El servicio **no** gestiona
+  usuarios ni contraseñas y no emite tokens.
+- Validación con **PyJWT** + `PyJWKClient` contra el JWKS del IdP:
+  - firma asimétrica (`RS256`/`ES256`); se rechazan `none` y `HS*`,
+  - `iss` y `aud` obligatorios y comparados con la configuración,
+  - `exp` obligatorio; tolerancia de reloj ≤ 30 s.
+- Identidad del usuario = claim **`sub`** (se guarda como texto opaco).
+- Token ausente o inválido → `401` con `WWW-Authenticate: Bearer`.
+- Configuración por entorno: `AUTH_ISSUER`, `AUTH_AUDIENCE`, `AUTH_JWKS_URL`.
+- Proveedor concreto (Keycloak / Entra ID / Auth0): `TBD`, se resuelve antes de
+  desplegar en `pruebas`. En tests se usa un par de llaves generado en la
+  fixture y un JWKS local.
 
 ## Autorización
 
-<!-- TODO: ¿RBAC / ABAC / policies / scopes / claims? Cómo se
-expresan los permisos (decoradores, middleware, policy engine como
-OPA). -->
+- Por **propiedad**: cada recurso de usuario guarda el `sub` de su dueño y toda
+  query filtra por él en la capa `service`.
+- Acceso a un recurso de otro usuario → **`404`** (igual que si no existiera),
+  para no revelar qué IDs existen.
+- Sin roles ni scopes por ahora.
 
 ## Manejo de secretos
 
-<!-- TODO: ¿Azure Key Vault / AWS Secrets Manager / HashiCorp Vault /
-Doppler / 1Password CLI / .env (sólo dev local)? Cómo se inyectan en
-runtime (env vars, CSI driver, init container). NUNCA hardcodear en
-código ni en specs. -->
+- Variables de entorno. `.env` **sólo** en local y en `.gitignore`; se commitea
+  `.env.example` sin valores reales.
+- El servicio no maneja secretos de firma (sólo llaves públicas vía JWKS). El
+  único secreto es la credencial de BD (`DATABASE_URL`).
+- Gestor de secretos en runtime: se decide junto con el deploy target.
 
 ## PII / datos sensibles
 
-<!-- TODO: qué se considera PII en este servicio (email, teléfono,
-documento, dirección, datos médicos, financieros). Política de
-masking en logs. Encryption at rest e in transit. -->
+- `sub`: identificador seudónimo del usuario.
+- El contenido que escribe el usuario (título, descripción) puede traer datos
+  personales: se trata como sensible y **no se loguea** (ver
+  `stack/patterns.md` § Logging).
+- En tránsito: TLS terminado en el ingress/gateway. En reposo: el cifrado del
+  proveedor de PostgreSQL.
 
 ## Compliance
 
-<!-- TODO: ¿GDPR / HIPAA / PCI-DSS / SOX / ISO 27001 / local? Si
-aplica alguna, cada R*.* relevante debe trazar a la regulación. -->
+Ninguna regulación específica declarada. Si se sirve a usuarios bajo la Ley
+1581 de 2012 (Colombia) o GDPR, se revisa este archivo y el borrado de datos
+por usuario.
 
 ## Residencia de datos
 
-<!-- TODO: si la regulación exige residencia (EU, US, LATAM),
-declararlo aquí. Cruzar con runtime declarado en `repo-config.yaml`
-para que los namespaces / regiones coincidan. -->
+Sin requisito declarado.
 
 ## Vulnerabilidades
 
-<!-- TODO: política de patches: ¿Dependabot, Snyk, Renovate?
-SLA por severidad (ej. CVE crítico → 24h, alto → 1 semana, medio →
-1 mes). Responsable del triage. -->
+- `pip-audit` sobre las dependencias en CI.
+- SLA: crítica 24 h, alta 1 semana, media 1 mes. Triage: owner del repo.
 
 ## Auditoría
 
-<!-- TODO: si se exige (compliance, SOX), qué eventos se loguean
-(login, cambios de permisos, accesos a PII), retención, dónde se
-guardan, quién los revisa. -->
+No exigida. Los logs de request (método, ruta, status, `sub`) bastan.

@@ -1,64 +1,75 @@
 # Patterns
 
-> **Servicio**: `<TODO: nombre del servicio>`
-> **Estado**: TODO — completar durante bootstrap
+> **Servicio**: `greenfield`
+> **Estado**: completo (bootstrap 2026-09-25)
 
 ## Naming
 
 ### Archivos
 
-<!-- TODO: kebab-case / PascalCase / snake_case según convención del
-ecosistema (TS suele kebab-case, .NET PascalCase, Python snake_case,
-Go snake_case en archivos pero camelCase en código). -->
+`snake_case.py` (PEP 8).
 
 ### Funciones / métodos
 
-<!-- TODO: camelCase / snake_case / PascalCase según lenguaje. -->
+`snake_case`.
 
 ### Clases / tipos / interfaces
 
-<!-- TODO: PascalCase usualmente. Convenciones específicas (ej.
-prefijo `I` para interfaces en C#? sin prefijo en TS?). -->
+`PascalCase`, sin prefijos (`Task`, `TaskCreate`, `TaskRead`). Los schemas
+Pydantic llevan el sufijo del uso: `<Entidad>Create`, `<Entidad>Update`,
+`<Entidad>Read`.
 
 ### Variables / constantes
 
-<!-- TODO: camelCase / snake_case / UPPER_SNAKE_CASE para constantes. -->
+`snake_case`; constantes de módulo en `UPPER_SNAKE_CASE`.
+
+### API HTTP
+
+- Recursos en plural y kebab-case: `/tasks`, `/tasks/{task_id}`.
+- Campos JSON en `snake_case`.
+- Fechas y horas en ISO 8601. Los instantes (`created_at`, …) siempre en UTC y
+  con zona horaria (`timestamptz` en BD, `datetime` aware en Python).
+- IDs: UUID.
 
 ## Imports
 
-<!-- TODO: ¿alias de path (@/ → src/)? ¿imports relativos vs
-absolutos? ¿orden (built-in, external, internal, parent, sibling)?
-¿auto-organizado por linter? -->
+Absolutos desde el paquete (`from greenfield.tasks import service`). Orden y
+agrupado automáticos con `ruff` (regla `I`).
 
 ## Convención de commits
 
-<!-- TODO: convención del repo. La metodología recomienda:
+Sin tracker (`repo-config.yaml > trackers: []`):
 
-  <type>(<scope>): T<n> - <desc> [R<x>.<y>] AB#<workitem-id>
+```
+<type>(greenfield): T<n> - <desc> [R<x>.<y>]
+```
 
-con `AB#` opcional según `repo-config.yaml > tracker`. Ver
-AGENTS.md § Convención de commits. -->
+`type` ∈ `feat`, `fix`, `test`, `refactor`, `docs`, `chore`, `spec`, `sign`.
+Los commits que no implementan una task (bootstrap, tooling) omiten `T<n>` y
+los `R*.*`. Mensajes en español neutro.
 
 ## Branching
 
-<!-- TODO: viene de `repo-config.yaml > environments` +
-`promotion_path`. Worktree por feature (`feat/<slug>`) según §6
-*Worktree, ramas y flujo de promoción* del methodology. -->
+Viene de `repo-config.yaml > environments` + `promotion_path`
+(`pruebas → qa → main`). Rama por feature `feat/<slug>` (worktree por feature,
+§6 del methodology). Sin `push --force` a ramas de ambiente.
 
 ## Organización de tests
 
-<!-- TODO: estructura (co-located `foo.ts` + `foo.test.ts`, vs
-separate dir `tests/`), naming (`*.test.ts` / `*_test.go` /
-`test_*.py`), convención `// Derived from R*.*`. Ver stack/testing.md
-para detalle de política. -->
+Directorio aparte `tests/` (ver `stack/testing.md`), archivos `test_*.py`, y
+cada test lleva `# Derived from R<x>.<y>` en la línea anterior a su `def`.
 
 ## Logging
 
-<!-- TODO: framework, niveles (debug/info/warn/error), formato
-(estructurado JSON vs texto), qué NO loguear (PII, secrets). Cruzar
-con stack/security.md. -->
+- `logging` de la stdlib, a stdout. Niveles: `DEBUG` (sólo local), `INFO`
+  (arranque, requests), `WARNING`, `ERROR` (excepciones no manejadas).
+- Formato texto en local; JSON cuando se defina el deploy target.
+- **No se loguea**: tokens, headers `Authorization`, ni el contenido de las
+  entidades de usuario (títulos o descripciones de tareas). Sí se permiten IDs
+  (`task_id`, `sub`).
 
 ## Error reporting
 
-<!-- TODO: ¿Sentry / Datadog / Application Insights / propio? Cómo
-se reportan errores no manejados, política de breadcrumbs. -->
+N/A hasta que se defina el deploy target: los errores no manejados se loguean
+en `ERROR` con stack trace. La herramienta (Sentry, App Insights, …) se decide
+junto con el runtime.

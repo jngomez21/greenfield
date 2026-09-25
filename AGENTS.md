@@ -699,6 +699,12 @@ los anti-patrones más críticos como recordatorio explícito.
 
 <!-- USER EXTENSIONS START -->
 
-<!-- (vacío por default — agrega secciones tuyas aquí) -->
+## Anti-patrones críticos de este repo (resumen de `stack/constraints.md`)
+
+- Queries a recursos de usuario sin filtrar por `owner_sub` (IDOR). Acceso ajeno → `404`.
+- Devolver modelos ORM como respuesta: siempre un schema `*Read`.
+- `datetime` sin zona horaria: siempre `datetime.now(UTC)`.
+- SQL concatenado a mano, `python-jose`, o dependencias nuevas sin OK explícito.
+- Editar una migración de Alembic ya mergeada.
 
 <!-- USER EXTENSIONS END -->
