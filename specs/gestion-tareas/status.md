@@ -1,4 +1,4 @@
-﻿---
+---
 feature: gestion-tareas
 state: in-progress
 methodology_version: "0.170"
