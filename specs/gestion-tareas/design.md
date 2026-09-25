@@ -260,7 +260,7 @@ validación real del token) y el middleware de log (métrica de éxito de 5xx).
   a la vez que D1.
 - Migraciones: `alembic upgrade head` como paso previo al arranque de cada
   despliegue.
-- Local: PostgreSQL 18 instalado en la máquina (base `greenfield`) y `uvicorn greenfield.main:app` (AMD-001).
+- Local: instancia PostgreSQL 18 propia en el puerto 5433 (base `greenfield`; ver `README.md`) y `uvicorn greenfield.main:app` (AMD-001).
 
 ### Configuración
 

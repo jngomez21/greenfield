@@ -55,8 +55,10 @@
 
 `TBD` — igual que `repo-config.yaml > runtime.type`. No bloquea desarrollo ni
 tests locales; se resuelve antes de la primera promoción a `pruebas`. Local:
-PostgreSQL 18 instalado en la máquina (servicio de Windows), con las bases `greenfield`
-(ejecución manual) y `greenfield_test` (pruebas).
+instancia PostgreSQL 18 propia del desarrollador (`initdb` con los binarios ya instalados,
+datos en `%LOCALAPPDATA%\greenfield\pgdata`, puerto **5433**, sin permisos de administrador), con
+las bases `greenfield` (ejecución manual) y `greenfield_test` (pruebas). Se arranca con `pg_ctl`
+(ver `README.md`).
 
 ## Versiones pineadas
 

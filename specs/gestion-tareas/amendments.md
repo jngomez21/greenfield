@@ -7,5 +7,6 @@
 - R*.* afectadas: ninguna (el comportamiento del servicio no cambia).
 - Artefactos cambiados: `stack/tech-stack.md`, `stack/testing.md`, `stack/architecture.md`, `design.md` (§ Arquitectura, Componentes, Dependencias nuevas, Despliegue, Configuración), `pyproject.toml`/`uv.lock`, `.env.example`.
 - Tasks afectadas: T1 (`done`; sus artefactos `compose.yaml` y `testcontainers` se retiran aquí), T2 (fixture y acceptance modificados).
+- Actualización 2026-09-25: se desconoce la clave del superusuario del servidor instalado y el usuario de Windows no es administrador (no se puede restablecer). Se usa una **instancia propia** creada con los mismos binarios de PostgreSQL 18.6 (`%LOCALAPPDATA%\greenfield\pgdata`, puerto 5433), arrancada por el dev con `pg_ctl`. Rol `greenfield` sin superusuario, dueño de `greenfield` y `greenfield_test`. Claves generadas al azar: la de la app sólo en `.env`; la del superusuario local en `%LOCALAPPDATA%\greenfield\admin-password.txt`.
 - PR de spec: — (rama `feat/gestion-tareas`, aún sin PR)
 - PR de implementación: —
