@@ -178,12 +178,9 @@ tareas. No hay tareas compartidas ni asignadas a terceros.
          Tests: integration
 
 **R3.3** WHEN un usuario solicita el listado de sus tareas, THE SYSTEM SHALL
-         devolverlas ordenadas por fecha de creación descendente (las más
-         recientes primero).
+         devolverlas paginadas según R3.7, por fecha de creación descendente
+         (más recientes primero) y, en caso de empate, por identificador.
          Tests: integration
-         [NEEDS CLARIFICATION: ¿el listado se pagina? (a) sí: 50 por página
-         por defecto, máximo 100, con total de resultados — recomendada;
-         (b) no: se devuelven todas en una sola respuesta]
 
 **R3.4** WHERE el usuario indica un estado como filtro del listado, THE SYSTEM
          SHALL devolver sólo sus tareas con ese estado.
@@ -195,6 +192,16 @@ tareas. No hay tareas compartidas ni asignadas a terceros.
 
 **R3.6** WHEN el usuario no tiene tareas que cumplan la consulta, THE SYSTEM
          SHALL devolver un listado vacío, no un error.
+         Tests: integration
+
+**R3.7** THE SYSTEM SHALL paginar los listados por posición, con 50 tareas por
+         página por defecto o el tamaño elegido por el usuario entre 1 y 100,
+         e incluir en cada respuesta el total de tareas que cumplen la consulta.
+         Tests: integration
+
+**R3.8** IF el tamaño de página está fuera del rango 1–100 o la posición
+         inicial es negativa, THEN THE SYSTEM SHALL rechazar la petición con
+         un error de validación que identifique el parámetro.
          Tests: integration
 
 ### R4 — Actualizar tareas [P1]
@@ -225,6 +232,11 @@ tareas. No hay tareas compartidas ni asignadas a terceros.
          la tarea no existe.
          Tests: integration
 
+**R4.7** WHEN llegan dos actualizaciones concurrentes de la misma tarea, THE
+         SYSTEM SHALL aplicarlas en el orden en que se procesan, prevaleciendo
+         la última, sin control de versión ni error de conflicto.
+         Tests: integration
+
 ### R5 — Eliminar tareas [P1]
 
 **R5.1** WHEN un usuario elimina una tarea propia, THE SYSTEM SHALL borrarla de
@@ -242,17 +254,13 @@ tareas. No hay tareas compartidas ni asignadas a terceros.
          Tests: integration
 
 **R6.2** THE SYSTEM SHALL ordenar las tareas pendientes por fecha límite
-         ascendente, con las que no tienen fecha límite al final y, en caso de
-         empate, por fecha de creación ascendente.
+         ascendente con las que no tienen fecha al final, luego por fecha de
+         creación ascendente y, si persiste el empate, por identificador.
          Tests: unit, integration
 
 **R6.3** THE SYSTEM SHALL indicar en cada tarea pendiente si está vencida, es
-         decir, si su fecha límite es anterior al día actual.
+         decir, si su fecha límite es anterior al día actual en UTC.
          Tests: unit, integration
-         [NEEDS CLARIFICATION: ¿en qué zona horaria se determina el "día
-         actual"? (a) UTC, igual para todos los usuarios — recomendada por
-         simple; (b) una zona horaria fija del servicio, p. ej.
-         America/Bogota; (c) el cliente envía su fecha local en la consulta]
 
 **R6.4** WHERE el usuario pide sólo las tareas vencidas, THE SYSTEM SHALL
          devolver únicamente las tareas pendientes vencidas.
@@ -260,6 +268,10 @@ tareas. No hay tareas compartidas ni asignadas a terceros.
 
 **R6.5** WHEN el usuario no tiene tareas pendientes, THE SYSTEM SHALL devolver un
          listado vacío, no un error.
+         Tests: integration
+
+**R6.6** THE SYSTEM SHALL paginar la consulta de tareas pendientes con las mismas
+         reglas de R3.7 y R3.8.
          Tests: integration
 
 ## Requisitos no funcionales
@@ -317,7 +329,11 @@ tareas. No hay tareas compartidas ni asignadas a terceros.
 - Q: ¿Qué devuelve "consultar mis tareas pendientes"? → A: las no completadas, ordenadas por fecha límite ascendente, sin fecha al final, con filtro opcional de sólo vencidas.
 - Q: ¿Cómo es la fecha límite? → A: opcional, sólo fecha (AAAA-MM-DD); vencida si es anterior a hoy.
 - Q: ¿Cómo se identifica al dueño? → A: por el usuario autenticado del token de un IdP externo (ver D1); el servicio no gestiona usuarios.
-- Supuestos por defecto tomados por el agente, **pendientes de tu confirmación en G2**: límites de 200 caracteres para el título y 2000 para la descripción (R2.4, R2.5); fecha límite pasada permitida al crear (R2.8); eliminación permanente (R5.1); acceso a tarea ajena indistinguible de inexistente (R1.3); ante actualizaciones concurrentes de la misma tarea gana la última escritura (sin control de versión); umbrales de NFR1.
+- Q (/spec-clarify): ¿En qué zona horaria se calcula el "día actual" que define una tarea vencida? → A: UTC, igual para todos los usuarios (R6.3).
+- Q (/spec-clarify): ¿Los listados se paginan? → A: sí, por posición; 50 por defecto, máximo 100, con total de resultados; aplica al listado general y a pendientes (R3.3, R3.7, R3.8, R6.6).
+- Q (/spec-clarify): ¿Qué pasa ante actualizaciones concurrentes de la misma tarea? → A: gana la última escritura, sin control de versión (R4.7).
+- Q (/spec-clarify): ¿Se confirman los supuestos por defecto? → A: sí: título ≤ 200 y descripción ≤ 2000 caracteres (R2.4, R2.5); fecha límite pasada permitida al crear (R2.8); eliminación permanente (R5.1); acceso a tarea ajena indistinguible de inexistente (R1.3); umbrales de NFR1.
+- Nota (/spec-clarify): para que los listados tengan un orden determinista (CHK-023), los empates se resuelven por identificador (R3.3, R6.2). Se permiten varias tareas con el mismo título: la spec no exige unicidad.
 
 ## OPEN_QUESTIONS
 
