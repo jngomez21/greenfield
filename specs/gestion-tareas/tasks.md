@@ -98,8 +98,8 @@
 - **Cubre**: R1.1, R1.2, R1.3, R1.4, NFR2
 - **Archivos**: `tests/integration/test_slice_p1.py`
 - **Acceptance**:
-  - [ ] Prueba independiente de P1 (usuarios A y B, `requirements.md` § Slices) pasa de punta a punta
-  - [ ] Ningún log del recorrido contiene título, descripción ni token (`caplog`)
+  - [x] Prueba independiente de P1 (usuarios A y B, `requirements.md` § Slices) pasa de punta a punta
+  - [x] Ningún log del recorrido contiene título, descripción ni token (`caplog`)
 
 **Checkpoint fase 2**: P1 verde y cobertura ≥ 85 %. Desplegable a `pruebas` cuando se resuelvan el runtime y D1 (hallazgo V1).
 
