@@ -115,7 +115,7 @@
 - **Cubre**: R6.1, R6.2, R6.3, R6.4, R6.5, R6.6
 - **Archivos**: `tests/integration/test_slice_p2.py`
 - **Acceptance**:
-  - [ ] Prueba independiente de P2 (`requirements.md` § Slices) pasa
+  - [x] Prueba independiente de P2 (`requirements.md` § Slices) pasa
 
 **Checkpoint fase 3**: P2 verde y cobertura ≥ 85 %.
 
