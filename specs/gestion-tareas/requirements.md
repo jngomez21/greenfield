@@ -111,7 +111,7 @@ tareas. No hay tareas compartidas ni asignadas a terceros.
 **R1.1** IF una petición no trae una credencial válida (ausente, mal formada,
          expirada o emitida para otro servicio), THEN THE SYSTEM SHALL
          rechazarla como no autenticada sin devolver ni modificar ninguna tarea.
-         Tests: integration, security
+         Tests: integration
 
 **R1.2** WHEN un usuario autenticado crea una tarea, THE SYSTEM SHALL registrar
          a ese usuario como su dueño.
@@ -120,11 +120,11 @@ tareas. No hay tareas compartidas ni asignadas a terceros.
 **R1.3** IF un usuario consulta, actualiza o elimina una tarea de la que no es
          dueño, THEN THE SYSTEM SHALL responder exactamente igual que si la
          tarea no existiera, sin modificarla.
-         Tests: integration, security
+         Tests: integration
 
 **R1.4** THE SYSTEM SHALL incluir en cualquier listado únicamente tareas cuyo
          dueño es el usuario que hace la petición.
-         Tests: integration, security
+         Tests: integration
 
 ### R2 — Crear tareas [P1]
 
@@ -228,8 +228,9 @@ tareas. No hay tareas compartidas ni asignadas a terceros.
          petición completa sin modificar ningún campo de la tarea.
          Tests: integration
 
-**R4.6** IF la tarea a actualizar no existe, THEN THE SYSTEM SHALL responder que
-         la tarea no existe.
+**R4.6** IF el identificador de la tarea a actualizar no corresponde a ninguna
+         tarea o no tiene un formato válido, THEN THE SYSTEM SHALL responder
+         que la tarea no existe.
          Tests: integration
 
 **R4.7** WHEN llegan dos actualizaciones concurrentes de la misma tarea, THE
@@ -243,8 +244,9 @@ tareas. No hay tareas compartidas ni asignadas a terceros.
          forma permanente.
          Tests: integration
 
-**R5.2** WHEN se consulta, actualiza o elimina una tarea ya eliminada, THE
-         SYSTEM SHALL responder que la tarea no existe.
+**R5.2** IF el identificador de la tarea a eliminar no corresponde a ninguna
+         tarea (nunca existió o ya fue eliminada) o no tiene un formato
+         válido, THEN THE SYSTEM SHALL responder que la tarea no existe.
          Tests: integration
 
 ### R6 — Consultar tareas pendientes [P2]
@@ -334,6 +336,7 @@ tareas. No hay tareas compartidas ni asignadas a terceros.
 - Q (/spec-clarify): ¿Qué pasa ante actualizaciones concurrentes de la misma tarea? → A: gana la última escritura, sin control de versión (R4.7).
 - Q (/spec-clarify): ¿Se confirman los supuestos por defecto? → A: sí: título ≤ 200 y descripción ≤ 2000 caracteres (R2.4, R2.5); fecha límite pasada permitida al crear (R2.8); eliminación permanente (R5.1); acceso a tarea ajena indistinguible de inexistente (R1.3); umbrales de NFR1.
 - Nota (/spec-clarify): para que los listados tengan un orden determinista (CHK-023), los empates se resuelven por identificador (R3.3, R6.2). Se permiten varias tareas con el mismo título: la spec no exige unicidad.
+- Nota (/spec-verify --pre-g2, aceptada por el dev): V2 — `Tests: security` pasa a `integration` en R1.1, R1.3 y R1.4 (son casos adversos de integración; `stack/testing.md` no define un nivel `security`). V3 — R4.6 y R5.2 cubren también identificadores inexistentes o con formato inválido, igual que R3.2.
 
 ## OPEN_QUESTIONS
 
