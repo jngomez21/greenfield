@@ -1,0 +1,13 @@
+# El Dockerfile copia rutas explícitas; esto evita subir secretos y peso al build.
+.env
+.env.*
+.git
+.venv
+**/__pycache__
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+tests
+specs
+docs

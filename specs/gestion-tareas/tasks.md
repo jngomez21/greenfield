@@ -145,8 +145,8 @@
 - **Cubre**: — (despliegue; DEC-12, DEC-13)
 - **Archivos**: `Dockerfile`, `.dockerignore`, `render.yaml`, `README.md`
 - **Acceptance**:
-  - [ ] Imagen con Python 3.13, dependencias de `uv.lock` sin las de desarrollo, usuario no root; arranque = migraciones + `uvicorn` en `$PORT`
-  - [ ] Blueprint: servicio `greenfield-pruebas` (rama `pruebas`, health `/health`, deploy tras CI) + base `greenfield-pruebas-db`; `AUTH_*` como `sync: false`
+  - [x] Imagen con Python 3.13, dependencias de `uv.lock` sin las de desarrollo, usuario no root; arranque = migraciones + `uvicorn` en `$PORT` — la imagen no se construyó localmente (sin Docker); se validó la secuencia de arranque con `DATABASE_URL` estilo Render (migraciones OK, `/health` 200, `/v1/tasks` sin token 401). Hallazgo corregido: `migrations/env.py` también normaliza `DATABASE_URL`
+  - [x] Blueprint: servicio `greenfield-pruebas` (rama `pruebas`, health `/health`, deploy tras CI) + base `greenfield-pruebas-db`; `AUTH_*` como `sync: false` — YAML válido; los nombres de campos se verifican al crear el Blueprint en Render
 
 ## T16 — CI en GitHub Actions [S]
 - **Cubre**: — (gate de `pruebas`, `stack/testing.md` § CI)
