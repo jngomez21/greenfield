@@ -295,9 +295,9 @@ tareas. No hay tareas compartidas ni asignadas a terceros.
 
 ### D1 — Proveedor de identidad OIDC
 - **Tipo**: externa
-- **Estado**: NEGOTIATING
+- **Estado**: AGREED (AMD-002: Keycloak gestionado, realm `greenfield`, cliente `greenfield-api`; configuración en `docs/keycloak.md`)
 - **Contrato**: OpenID Connect Core 1.0 (tokens JWT firmados) + JSON Web Key Set, RFC 7517 — id `oidc-core`, version `1.0`
-- **Owner**: @jngomez21 (elige y configura el proveedor)
+- **Owner**: @jngomez21 (crea la cuenta y configura el realm)
 - **Tracking**: —
 - **ETA**: antes de la primera promoción a `pruebas`
 - **Estrategia**: MOCK

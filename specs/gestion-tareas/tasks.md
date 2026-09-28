@@ -131,3 +131,33 @@
 - **Cubre**: NFR1
 - **Acceptance**:
   - [ ] Corrida k6 contra `pruebas` con tokens reales del IdP y thresholds en verde
+
+## Fase 4 — Despliegue en Render (AMD-002)
+
+## T14 — `GET /health` y `DATABASE_URL` en formato de Render [S]
+- **Cubre**: — (operación; DEC-12). Health check de Render; `postgresql://` de Render → `postgresql+psycopg://`
+- **Archivos**: `src/greenfield/main.py`, `src/greenfield/config.py`, `tests/integration/test_health.py`, `tests/unit/test_config.py`
+- **Acceptance**:
+  - [ ] `GET /health` → 200 `{"status": "ok"}` sin token y sin tocar la BD
+  - [ ] `DATABASE_URL` con `postgresql://` o `postgres://` se normaliza a `postgresql+psycopg://`
+
+## T15 — `Dockerfile` y `render.yaml` [M]
+- **Cubre**: — (despliegue; DEC-12, DEC-13)
+- **Archivos**: `Dockerfile`, `.dockerignore`, `render.yaml`, `README.md`
+- **Acceptance**:
+  - [ ] Imagen con Python 3.13, dependencias de `uv.lock` sin las de desarrollo, usuario no root; arranque = migraciones + `uvicorn` en `$PORT`
+  - [ ] Blueprint: servicio `greenfield-pruebas` (rama `pruebas`, health `/health`, deploy tras CI) + base `greenfield-pruebas-db`; `AUTH_*` como `sync: false`
+
+## T16 — CI en GitHub Actions [S]
+- **Cubre**: — (gate de `pruebas`, `stack/testing.md` § CI)
+- **Archivos**: `.github/workflows/ci.yml`
+- **Acceptance**:
+  - [ ] En push y PR: `ruff check`, `ruff format --check`, `mypy`, `pytest` (con cobertura) contra un servicio PostgreSQL 18, `pip-audit`
+
+## T17 — Guía de configuración de Keycloak [S]
+- **Cubre**: — (D1 → LIVE)
+- **Archivos**: `docs/keycloak.md`
+- **Acceptance**:
+  - [ ] Pasos para el realm `greenfield`, el cliente `greenfield-api` con *audience mapper*, los 10 usuarios de prueba y cómo obtener un token; valores de `AUTH_*` para Render
+
+**Checkpoint fase 4**: CI en verde en GitHub; el Blueprint y la guía listos para que el dev cree las cuentas y despliegue. D1 pasa a `LIVE` y T13 se desbloquea cuando un token real funcione contra `pruebas`.

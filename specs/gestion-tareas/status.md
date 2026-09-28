@@ -61,11 +61,15 @@ T9: done | commit 55994ee | 2026-09-25
 T10: done | commit c3c3d87 | 2026-09-25
 T11: done | commit 51ec0a5 | 2026-09-25
 T12: done | commit 1092dcc | 2026-09-25
-T13: blocked | blocked_by: D1=LIVE y runtime de `pruebas` sin decidir (hallazgo V1)
+T13: blocked | blocked_by: D1=LIVE y servicio desplegado en Render (AMD-002)
+T14: pending |
+T15: pending |
+T16: pending |
+T17: pending |
 
 ## Dependencies snapshot
 
-D1 (Proveedor de identidad OIDC): NEGOTIATING
+D1 (Proveedor de identidad OIDC): AGREED (Keycloak gestionado, AMD-002)
 
 ## Notas
 
@@ -81,3 +85,4 @@ D1 (Proveedor de identidad OIDC): NEGOTIATING
 - 2026-09-25: `/code-review high` de la rama, antes del PR. 10 hallazgos, cada uno verificado con un test que fallaba antes del fix. **Corregidos (7)**: PATCH/DELETE con `SELECT … FOR UPDATE` + relectura (última escritura gana de verdad y carrera con DELETE da 404, no 500) [R4.6, R4.7, R5.2]; U+0000 en título/descripción → 422 en vez de 500 [R2.4, R2.5]; `offset` tope bigint → 422 en vez de 500 [R3.8, R6.6]; predicado literal `'completed'` para que el plan genérico use el índice parcial [NFR1]; `LOG_LEVEL` en minúsculas o vacío ya no tumba el arranque; `conftest` fija `AUTH_*` sin `setdefault`; timeout de 5 s al JWKS. **Descartados (3)**: refresco de JWKS por `kid` desconocido (PyJWT 2.15 ya limita a uno cada 30 s con lock; sólo se bajó el timeout); total y página en consultas separadas (paginación por offset es inconsistente entre páginas bajo escrituras de todos modos; la spec no pide snapshot); doble validación en pendientes (costo despreciable con ≤ 100 ítems). 162 tests en verde, cobertura 100 %.
 - 2026-09-25: PR #1 (`feat/gestion-tareas` → `pruebas`) fusionada por el dev en `d545bf0`, sin revisor en GitHub (la rama `pruebas` no tiene branch protection). No hay despliegue: sin runtime ni pipeline, el código está en la rama `pruebas` pero no corre en ningún ambiente; las tasks siguen `done`, no `deployed:pruebas`.
 - 2026-09-28: **G3 firmado como autorrevisión** por jngomez@syc.com.co sobre `9308dcb` (head de la PR #1). **No hubo revisor distinto del autor**: dev y tech lead son la misma persona (self-approval explícito, AGENTS.md § Gates). Apoyo a la revisión: `/code-review high` (10 hallazgos, 7 corregidos con test, 3 descartados con razón). Recomendado antes de la próxima PR: branch protection en `pruebas`/`qa`/`main` con 1 aprobación obligatoria.
+- 2026-09-28: **AMD-002** (alcance aprobado por el dev): runtime Render + PostgreSQL de Render + Keycloak gestionado; proyecto de práctica, sin usuarios reales. Resuelve V1; D1 → `AGREED`. Nuevas T14–T17 (fase 4). Ver `amendments.md`.

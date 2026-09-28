@@ -1,7 +1,7 @@
 # Security
 
 > **Servicio**: `greenfield`
-> **Estado**: completo (bootstrap 2026-09-25). Proveedor de identidad concreto `TBD`: sólo cambia configuración.
+> **Estado**: completo (bootstrap 2026-09-25; IdP y secretos concretados en AMD-002 de `gestion-tareas`, 2026-09-28).
 
 ## Autenticación
 
@@ -14,9 +14,10 @@
 - Identidad del usuario = claim **`sub`** (se guarda como texto opaco).
 - Token ausente o inválido → `401` con `WWW-Authenticate: Bearer`.
 - Configuración por entorno: `AUTH_ISSUER`, `AUTH_AUDIENCE`, `AUTH_JWKS_URL`.
-- Proveedor concreto (Keycloak / Entra ID / Auth0): `TBD`, se resuelve antes de
-  desplegar en `pruebas`. En tests se usa un par de llaves generado en la
-  fixture y un JWKS local.
+- Proveedor: **Keycloak gestionado** (plan gratuito de un proveedor "Keycloak como
+  servicio"), realm `greenfield`, cliente `greenfield-api` con *audience mapper*.
+  Configuración paso a paso en `docs/keycloak.md`. Proyecto de práctica: sin
+  usuarios reales. En tests se usa un par de llaves generado en la fixture.
 
 ## Autorización
 
@@ -32,7 +33,9 @@
   `.env.example` sin valores reales.
 - El servicio no maneja secretos de firma (sólo llaves públicas vía JWKS). El
   único secreto es la credencial de BD (`DATABASE_URL`).
-- Gestor de secretos en runtime: se decide junto con el deploy target.
+- Secretos en runtime: variables de entorno del servicio en **Render**. `DATABASE_URL`
+  la inyecta Render desde su base; `AUTH_*` no son secretas pero se cargan en el
+  dashboard (`sync: false`), nunca en `render.yaml`.
 
 ## PII / datos sensibles
 

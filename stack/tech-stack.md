@@ -35,7 +35,7 @@
 - **uv** (gestión de dependencias y entornos). `pyproject.toml` como fuente
   única; **`uv.lock` se commitea**.
 - Sin bundler (no aplica).
-- Imagen de contenedor: `Dockerfile` multi-stage cuando se decida el deploy target.
+- Imagen de contenedor: `Dockerfile` multi-stage (se construye en Render, no en la máquina local).
 
 ## Tests
 
@@ -53,8 +53,10 @@
 
 ## Deploy target
 
-`TBD` — igual que `repo-config.yaml > runtime.type`. No bloquea desarrollo ni
-tests locales; se resuelve antes de la primera promoción a `pruebas`. Local:
+**Render** (PaaS), decidido en AMD-002 de `gestion-tareas` (proyecto de práctica): servicio
+web desde `Dockerfile`, Blueprint `render.yaml`, PostgreSQL gestionado de Render. CI en
+**GitHub Actions** (`.github/workflows/ci.yml`) como gate del despliegue. Igual que
+`repo-config.yaml > runtime`. Local:
 instancia PostgreSQL 18 propia del desarrollador (`initdb` con los binarios ya instalados,
 datos en `%LOCALAPPDATA%\greenfield\pgdata`, puerto **5433**, sin permisos de administrador), con
 las bases `greenfield` (ejecución manual) y `greenfield_test` (pruebas). Se arranca con `pg_ctl`

@@ -177,7 +177,8 @@ promotion_path: [pruebas, qa, main]
 # static-host    : Vercel / Netlify / S3+CloudFront
 # none           : repo no se despliega (`docs-only`, `catalog-only`)
 runtime:
-  type: TBD                            # sin decidir — ver stack/tech-stack.md § Deploy target
+  type: paas                           # AMD-002 de gestion-tareas: proyecto de práctica
+  provider: render                     # Blueprint en render.yaml; sólo `pruebas` por ahora
   # cluster: ocp-eu-west-1
   # namespace_pattern: "{service}-{env}"
 

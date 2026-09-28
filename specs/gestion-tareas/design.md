@@ -68,7 +68,10 @@ traduce las excepciones a `application/problem+json`.
 
 | Componente | Responsabilidad | Justificado por |
 |---|---|---|
-| `src/greenfield/main.py` | Crea la app, monta el router bajo `/v1`, registra handlers y el middleware de log | Wiring (todas las R) |
+| `src/greenfield/main.py` | Crea la app, monta el router bajo `/v1`, registra handlers y el middleware de log; expone `GET /health` sin autenticación (AMD-002) | Wiring (todas las R); health check de Render |
+| `Dockerfile`, `render.yaml` | Imagen del servicio y Blueprint de Render: servicio `pruebas`, su base y variables (AMD-002) | § Despliegue |
+| `.github/workflows/ci.yml` | ruff, mypy, pytest contra PostgreSQL 18 y pip-audit en cada push/PR (AMD-002) | Gate de `pruebas` en `repo-config.yaml`; `stack/testing.md` § CI |
+| `docs/keycloak.md` | Guía de configuración del realm, cliente, *audience mapper* y usuarios de prueba (AMD-002) | D1 |
 | `src/greenfield/config.py` | Lee `DATABASE_URL`, `AUTH_ISSUER`, `AUTH_AUDIENCE`, `AUTH_JWKS_URL`, `LOG_LEVEL` del entorno; falla al arrancar si falta alguna | R1.1, D1, `stack/constraints.md` (12-factor) |
 | `src/greenfield/db.py` | Engine, `sessionmaker` y dependencia `get_session`: commit si todo sale bien, rollback si hay excepción | R4.5 (atomicidad), R4.7 |
 | `src/greenfield/auth.py` | Dependencia `get_current_user` → `sub`; dependencia `get_key_resolver` (JWKS del IdP en producción, llave local en tests) | R1.1, R1.2, D1 (MOCK) |
@@ -223,6 +226,18 @@ N/A — la feature no publica ni consume eventos.
   corrida si no se cumplen.
   - Alternativas: Locust (rechazada: dependencia Python nueva con muchas
     transitivas y sin thresholds incorporados).
+- **DEC-12** (AMD-002): runtime **Render** + **Keycloak gestionado** (plan gratuito de un
+  proveedor "Keycloak como servicio") + **PostgreSQL de Render**. Proyecto de práctica,
+  sin usuarios reales. Resuelve el hallazgo V1 y concreta D1.
+  - Alternativas: OpenShift o Azure con Entra ID (rechazadas: requieren infraestructura
+    corporativa y TI; no hacen falta para practicar); Keycloak en el mismo PaaS
+    (rechazada: más memoria que el plan gratuito y otro servicio que operar); Keycloak
+    local con túnel (rechazada: depende de que el equipo esté encendido y del proxy).
+- **DEC-13** (AMD-002): las migraciones corren en el arranque del contenedor
+  (`alembic upgrade head && uvicorn …`). Con una sola instancia no hay carrera entre
+  réplicas; si se escala a varias, mover las migraciones a un paso previo al despliegue.
+  - Alternativas: comando *pre-deploy* de Render (descartada por ahora: puede no estar
+    disponible en el plan gratuito).
 
 ### Dependencias nuevas (requieren OK en G2 — AGENTS.md § *Dependencias nuevas*)
 
@@ -253,23 +268,30 @@ validación real del token) y el middleware de log (métrica de éxito de 5xx).
 ## Despliegue
 
 - `repo_type: service`. Flujo `pruebas → qa → main` (`repo-config.yaml`).
-- **Runtime `TBD`** (`repo-config.yaml > runtime.type`, `stack/tech-stack.md`).
-  La imagen de contenedor, los manifiestos, el health check y el límite de
-  tamaño de body en el ingress se definen cuando se decida el runtime. Esto
-  **bloquea `/spec-promote --to pruebas`, no la implementación**, y se resuelve
-  a la vez que D1.
-- Migraciones: `alembic upgrade head` como paso previo al arranque de cada
-  despliegue.
+- **Runtime: Render** (AMD-002, DEC-12). Proyecto de práctica: se despliega pero no
+  tiene usuarios reales.
+  - Servicio web `greenfield-pruebas` construido desde `Dockerfile`, desplegado
+    desde la rama `pruebas` y declarado en `render.yaml` (Blueprint versionado).
+    `qa` y `main` se agregan al Blueprint cuando haya que promover a ellos.
+  - Base: PostgreSQL gestionado de Render (`greenfield-pruebas-db`), plan gratuito;
+    que caduque es aceptable porque el proyecto no se usa.
+  - Render sólo despliega cuando pasan los checks de CI (GitHub Actions, T16).
+  - Health check: `GET /health` (T14).
+- Migraciones: `alembic upgrade head` en el comando de arranque del contenedor, antes
+  de `uvicorn` (DEC-13).
+- Límite de tamaño de body: Render no expone uno configurable. Riesgo aceptado para
+  práctica: los límites por campo (R2.4, R2.5) acotan lo que se guarda.
 - Local: instancia PostgreSQL 18 propia en el puerto 5433 (base `greenfield`; ver `README.md`) y `uvicorn greenfield.main:app` (AMD-001).
 
 ### Configuración
 
 | Variable | Origen | Notas |
 |---|---|---|
-| `DATABASE_URL` | Secreto (gestor por definir con el runtime; `.env` en local) | `postgresql+psycopg://…`; nunca en el repo |
-| `AUTH_ISSUER` | Config por ambiente | `iss` esperado (D1) |
-| `AUTH_AUDIENCE` | Config por ambiente | `aud` esperado (D1) |
-| `AUTH_JWKS_URL` | Config por ambiente | URL del JWKS del IdP (D1) |
+| `DATABASE_URL` | Render: `fromDatabase` de `greenfield-pruebas-db` (`render.yaml`); `.env` en local | Render la entrega como `postgresql://…`; `config.py` la normaliza a `postgresql+psycopg://` (T14). Nunca en el repo |
+| `AUTH_ISSUER` | Render: variable del servicio (`sync: false`, se carga en el dashboard) | `https://<host-keycloak>/realms/greenfield` (D1, `docs/keycloak.md`) |
+| `AUTH_AUDIENCE` | Render: variable del servicio | `greenfield-api` (lo agrega el *audience mapper* de Keycloak) |
+| `AUTH_JWKS_URL` | Render: variable del servicio | `<AUTH_ISSUER>/protocol/openid-connect/certs` |
+| `PORT` | Render (inyectada) | Puerto donde escucha `uvicorn`; default 8000 en el `Dockerfile` |
 | `LOG_LEVEL` | Config por ambiente | Default `INFO` |
 | `TEST_DATABASE_URL` | Sólo pruebas (`.env` en local, secreto del pipeline en CI) | El nombre de la base debe terminar en `_test` (AMD-001) |
 
