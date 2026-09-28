@@ -138,8 +138,8 @@
 - **Cubre**: — (operación; DEC-12). Health check de Render; `postgresql://` de Render → `postgresql+psycopg://`
 - **Archivos**: `src/greenfield/main.py`, `src/greenfield/config.py`, `tests/integration/test_health.py`, `tests/unit/test_config.py`
 - **Acceptance**:
-  - [ ] `GET /health` → 200 `{"status": "ok"}` sin token y sin tocar la BD
-  - [ ] `DATABASE_URL` con `postgresql://` o `postgres://` se normaliza a `postgresql+psycopg://`
+  - [x] `GET /health` → 200 `{"status": "ok"}` sin token y sin tocar la BD
+  - [x] `DATABASE_URL` con `postgresql://` o `postgres://` se normaliza a `postgresql+psycopg://`
 
 ## T15 — `Dockerfile` y `render.yaml` [M]
 - **Cubre**: — (despliegue; DEC-12, DEC-13)

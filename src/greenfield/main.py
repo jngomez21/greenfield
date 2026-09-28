@@ -13,6 +13,12 @@ def create_app() -> FastAPI:
     app = FastAPI(title="greenfield", version="0.1.0")
     register_error_handlers(app)
     register_access_log(app)
+
+    @app.get("/health", include_in_schema=False)
+    def health() -> dict[str, str]:
+        """Liveness para el health check de Render: sin token y sin BD (AMD-002)."""
+        return {"status": "ok"}
+
     api = APIRouter(prefix="/v1")
     api.include_router(tasks_router)
     app.include_router(api)

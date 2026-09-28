@@ -26,6 +26,21 @@ def test_config_normaliza_log_level(full_env: pytest.MonkeyPatch, raw: str, expe
     assert load_settings().log_level == expected
 
 
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    [
+        ("postgresql://u:p@host/db", "postgresql+psycopg://u:p@host/db"),  # formato de Render
+        ("postgres://u:p@host/db", "postgresql+psycopg://u:p@host/db"),
+        ("postgresql+psycopg://u:p@host/db", "postgresql+psycopg://u:p@host/db"),
+    ],
+)
+def test_config_normaliza_database_url_al_driver_psycopg(
+    full_env: pytest.MonkeyPatch, raw: str, expected: str
+) -> None:
+    full_env.setenv("DATABASE_URL", raw)
+    assert load_settings().database_url == expected
+
+
 def test_config_falla_listando_las_variables_que_faltan(full_env: pytest.MonkeyPatch) -> None:
     full_env.delenv("AUTH_ISSUER")
     full_env.setenv("AUTH_AUDIENCE", "")

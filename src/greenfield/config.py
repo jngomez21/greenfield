@@ -16,12 +16,20 @@ class Settings:
     log_level: str
 
 
+def _sqlalchemy_url(url: str) -> str:
+    """Render entrega `postgresql://` (o `postgres://`); SQLAlchemy necesita el driver psycopg."""
+    for prefix in ("postgresql://", "postgres://"):
+        if url.startswith(prefix):
+            return "postgresql+psycopg://" + url.removeprefix(prefix)
+    return url
+
+
 def load_settings() -> Settings:
     missing = [name for name in _REQUIRED if not os.environ.get(name)]
     if missing:
         raise RuntimeError(f"Faltan variables de entorno: {', '.join(missing)}")
     return Settings(
-        database_url=os.environ["DATABASE_URL"],
+        database_url=_sqlalchemy_url(os.environ["DATABASE_URL"]),
         auth_issuer=os.environ["AUTH_ISSUER"],
         auth_audience=os.environ["AUTH_AUDIENCE"],
         auth_jwks_url=os.environ["AUTH_JWKS_URL"],
